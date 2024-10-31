@@ -41,6 +41,7 @@ body {
 
 /*NAV*/
 .menu-container {
+    padding: 0 20px;
     display: flex;
     align-items: baseline;
     margin: 20px auto;
@@ -61,7 +62,17 @@ body {
     color: #fff;
     border: none;
     cursor: pointer;
-    text-align: left;
+    text-align: center;
+    transition: box-shadow 0.1s ease-in-out;
+}
+
+.dropdown-button:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+a.dropdown-button{
+    color: white;
+    text-decoration: none;
 }
 
 .dropdown-content {
@@ -87,40 +98,51 @@ body {
     background-color: #f0f0f0;
 }
 
-.search-bar {
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    margin-top: 10px;
-    border: 1px solid #ddd;
-}
-
 /*HOME PAGE*/
 
 .content {
     padding: 20px;
 }
 
-.recipe-categories, .featured-recipes {
+.featured-recipes {
     margin-top: 20px;
+    display: flex;
 }
 
-.category {
-    display: inline-block;
-    padding: 10px 20px;
+section header{
     background: #ff6f61;
     color: white;
-    border-radius: 20px;
-    margin: 5px;
-    cursor: pointer;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 10px 0;
+    text-align: center;
 }
+
+/*.category {*/
+/*    display: inline-block;*/
+/*    padding: 10px 20px;*/
+/*    background: #ff6f61;*/
+/*    color: white;*/
+/*    border-radius: 20px;*/
+/*    margin: 5px;*/
+/*    cursor: pointer;*/
+/*}*/
 
 .recipe-card {
     border: 1px solid #ddd;
     padding: 20px;
-    margin: 10px 0;
+    margin: 10px 10px;
     border-radius: 10px;
     background: white;
+    transition: box-shadow 0.1s ease-in-out;
+}
+
+.recipe-card div{
+    text-align: center;
+}
+
+.recipe-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .view-recipe-btn {
@@ -130,6 +152,10 @@ body {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+}
+
+.view-recipe-btn:hover {
+    background-color: #ff5f51;
 }
 
 /*FOOTER*/

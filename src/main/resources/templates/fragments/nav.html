@@ -1,4 +1,6 @@
 <div class="menu-container">
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <a class="dropdown-button" th:href="@{/}">Home</a>
     <div class="dropdown">
         <button class="dropdown-button">Categories</button>
         <div id="category-menu" class="dropdown-content">
@@ -29,7 +31,7 @@
         </div>
     </div>
 
-    <input type="text" class="search-bar" placeholder="Search recipes...">
+    <a class="dropdown-button" th:href="@{/search}">Search for recipes</a>
     <script th:inline="javascript">
         $(document).ready(function() {
             $('.dropdown-button').on('click', function(event) {

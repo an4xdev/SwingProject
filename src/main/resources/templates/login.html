@@ -1,23 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login - Online Recipe Book</title>
-  <link rel="stylesheet" href="/styles/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Online Recipe Book</title>
+    <link rel="stylesheet" href="/styles/styles.css">
 </head>
 <body>
-<div class="login-container">
-  <h2>Login</h2>
-  <form>
-    <label for="username">Username</label>
-    <input type="text" id="username" name="username" required>
+    <div th:insert="~{fragments/header :: header}"></div>
+    <div th:insert="~{fragments/nav :: div}"></div>
+    <main>
+        <div class="login-container">
+            <h2>Login</h2>
+            <form>
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
 
-    <label for="password">Password</label>
-    <input type="password" id="password" name="password" required>
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
 
-    <button type="submit" class="login-btn">Login</button>
-  </form>
-</div>
+                <button type="submit" class="login-btn">Login</button>
+            </form>
+        </div>
+    </main>
+    <div th:insert="~{fragments/footer :: footer}"></div>
 </body>
 </html>

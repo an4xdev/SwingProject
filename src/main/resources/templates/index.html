@@ -6,37 +6,22 @@
     <title>Home - Online Recipe Book</title>
     <link rel="stylesheet" href="/styles/styles.css">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
-    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
 </head>
 <body>
 <div th:insert="~{fragments/header :: header}"></div>
 <div th:insert="~{fragments/nav :: div}"></div>
-<main class="content">
-    <section class="recipe-categories">
-        <h2>Popular Categories</h2>
-        <div class="categories">
-            <div class="category">Breakfast</div>
-            <div class="category">Lunch</div>
-            <div class="category">Dinner</div>
-            <div class="category">Dessert</div>
-        </div>
-    </section>
-
-    <section class="featured-recipes">
-        <h2>Top Recipes</h2>
-        <div class="recipe-card">
-            <h3>Spaghetti Bolognese</h3>
-            <p>A classic Italian pasta dish with rich meat sauce.</p>
-            <button class="view-recipe-btn">View Recipe</button>
-        </div>
-        <div class="recipe-card">
-            <h3>Vegan Pancakes</h3>
-            <p>Delicious fluffy pancakes, perfect for breakfast.</p>
-            <button class="view-recipe-btn">View Recipe</button>
-        </div>
-    </section>
-    <div th:insert="~{fragments/footer :: footer}"></div>
+    <main class="content">
+        <section>
+            <header>
+                <h2>Newest Recipes</h2>
+            </header>
+            <div class="featured-recipes">
+                <div th:insert="~{fragments/recipe_card :: div}"></div>
+                <div th:insert="~{fragments/recipe_card :: div}"></div>
+                <div th:insert="~{fragments/recipe_card :: div}"></div>
+            </div>
+        </section>
     </main>
-
+    <div th:insert="~{fragments/footer :: footer}"></div>
 </body>
 </html>
