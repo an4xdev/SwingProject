@@ -1,0 +1,49 @@
+<div class="menu-container">
+    <div class="dropdown">
+        <button class="dropdown-button">Categories</button>
+        <div id="category-menu" class="dropdown-content">
+            <label>Breakfast</label>
+            <label>Lunch</label>
+            <label>Dinner</label>
+            <label>Desserts</label>
+        </div>
+    </div>
+
+    <div class="dropdown">
+        <button class="dropdown-button">Difficulty</button>
+        <div id="difficulty-menu" class="dropdown-content">
+            <label>Easy</label>
+            <label>Medium</label>
+            <label>Hard</label>
+        </div>
+    </div>
+
+    <div class="dropdown">
+        <button class="dropdown-button">Events</button>
+        <div id="event-menu" class="dropdown-content">
+            <label>Christmas</label>
+            <label>Easter</label>
+            <label>Valentine's Day</label>
+            <label>Birthday</label>
+            <label>Casual</label>
+        </div>
+    </div>
+
+    <input type="text" class="search-bar" placeholder="Search recipes...">
+    <script th:inline="javascript">
+        $(document).ready(function() {
+            $('.dropdown-button').on('click', function(event) {
+                event.stopPropagation();
+                const menuId = $(this).next('.dropdown-content');
+
+                $('.dropdown-content').not(menuId).hide();
+
+                menuId.toggle();
+            });
+
+            $(window).on('click', function() {
+                $('.dropdown-content').hide();
+            });
+        });
+    </script>
+</div>

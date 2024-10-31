@@ -1,4 +1,4 @@
-﻿package edu.uws.ii.project.domain;
+package edu.uws.ii.project.domain;
 
 import jakarta.persistence.*;
 

@@ -1,4 +1,4 @@
-﻿package edu.uws.ii.project.domain;
+package edu.uws.ii.project.domain;
 
 import jakarta.persistence.*;
 
@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "\"user\"")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +25,6 @@ public class User {
     @OneToMany(mappedBy = "userComm", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "userHistory", cascade = CascadeType.ALL)
     private List<RecipeHistory> recipeHistories = new ArrayList<>();
 }

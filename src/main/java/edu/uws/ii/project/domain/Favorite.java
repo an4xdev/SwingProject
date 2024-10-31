@@ -1,4 +1,4 @@
-﻿package edu.uws.ii.project.domain;
+package edu.uws.ii.project.domain;
 
 import jakarta.persistence.*;
 
@@ -13,5 +13,5 @@ public class Favorite {
 
     @ManyToOne
     @JoinColumn(name = "recipe_id")
-    private Recipe recipe;
+    private Recipe recipeFav;
 }
