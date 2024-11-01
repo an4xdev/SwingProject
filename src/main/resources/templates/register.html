@@ -10,20 +10,23 @@
     <div th:insert="~{fragments/header :: header}"></div>
     <div th:insert="~{fragments/nav :: div}"></div>
     <main>
-        <div class="login-container">
-            <h2>Login</h2>
+        <div class="register-container">
+            <h2>Register</h2>
             <form>
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username" required>
 
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" required>
+
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" required>
 
-                <button type="submit" class="login-btn">Login</button>
+                <button type="submit" class="register-btn">Register</button>
             </form>
         </div>
         <div style="text-align: center">
-            <p>Don't have an account? <a th:href="@{/register}">Register</a></p>
+            <p>Already have account? <a th:href="@{/login}">Login</a></p>
         </div>
     </main>
     <div th:insert="~{fragments/footer :: footer}"></div>

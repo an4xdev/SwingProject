@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Online Recipe Book</title>
+    <link rel="stylesheet" href="/styles/styles.css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div th:insert="~{fragments/header :: header}"></div>
+    <div th:insert="~{fragments/nav :: div}"></div>
+
+    <main class="content">
+        <section>
+            <header>
+                <h2>Search for recipes</h2>
+            </header>
+            <form>
+                <div class="search-container">
+                    <div class="search-input-container">
+                        <input type="search" name="search" required class="search-input" placeholder="Name of recipe">
+                    </div>
+                    <div>
+                        <button type="submit" class="search-btn">Search</button>
+                    </div>
+                </div>
+                <div style="display: flex;">
+                    <div class="search-advanced">
+                        <div class="options-advanced">
+                            <label for="category">Category:</label>
+                            <select id="category" name="category">
+                                <option value="all">All</option>
+                                <option value="breakfast">Breakfast</option>
+                                <option value="lunch">Lunch</option>
+                                <option value="dinner">Dinner</option>
+                                <option value="dessert">Dessert</option>
+                            </select>
+                        </div>
+                        <div class="options-advanced">
+                            <label for="difficulty">Difficulty:</label>
+                            <select id="difficulty" name="difficulty">
+                                <option value="all">All</option>
+                                <option value="easy">Easy</option>
+                                <option value="medium">Medium</option>
+                                <option value="hard">Hard</option>
+                            </select>
+                        </div>
+                        <div class="options-advanced">
+                            <label for="event">Event:</label>
+                            <select id="event" name="event">
+                                <option value="all">All</option>
+                                <option value="christmas">Christmas</option>
+                                <option value="easter">Easter</option>
+                                <option value="thanksgiving">Thanksgiving</option>
+                                <option value="birthday">Birthday</option>
+                            </select>
+                        </div>
+                        <div class="options-advanced">
+                            <label for="sort">Sort by:</label>
+                            <select id="sort" name="sort">
+                                <option value="newest">Newest</option>
+                                <option value="oldest">Oldest</option>
+                                <option value="title">Title</option>
+                                <option value="difficulty">Difficulty</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="featured-recipes">
+                        <div th:insert="~{fragments/recipe_card :: div}"></div>
+                        <div th:insert="~{fragments/recipe_card :: div}"></div>
+                        <div th:insert="~{fragments/recipe_card :: div}"></div>
+                        <div th:insert="~{fragments/recipe_card :: div}"></div>
+                        <div th:insert="~{fragments/recipe_card :: div}"></div>
+                        <div th:insert="~{fragments/recipe_card :: div}"></div>
+                        <div th:insert="~{fragments/recipe_card :: div}"></div>
+                    </div>
+                </div>
+            </form>
+        </section>
+    </main>
+    <div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+</html>

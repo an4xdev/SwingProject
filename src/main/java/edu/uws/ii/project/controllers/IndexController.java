@@ -24,4 +24,19 @@ public class IndexController {
     public String addRecipe() {
         return "add_recipe";
     }
+
+    @GetMapping("/search")
+    public String search() {
+        return "search";
+    }
+
+    @GetMapping("/register")
+    public String register() {
+        return "register";
+    }
+
+    @GetMapping("/profile")
+    public String profile() {
+        return "profile";
+    }
 }

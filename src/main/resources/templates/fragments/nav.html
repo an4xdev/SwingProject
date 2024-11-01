@@ -1,33 +1,25 @@
 <div class="menu-container">
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <a class="dropdown-button" th:href="@{/}">Home</a>
+
     <div class="dropdown">
         <button class="dropdown-button">Categories</button>
         <div id="category-menu" class="dropdown-content">
-            <label>Breakfast</label>
-            <label>Lunch</label>
-            <label>Dinner</label>
-            <label>Desserts</label>
+            <label th:each="category : ${navigationData.categories}" th:text="${category.name}"></label>
         </div>
     </div>
 
     <div class="dropdown">
         <button class="dropdown-button">Difficulty</button>
         <div id="difficulty-menu" class="dropdown-content">
-            <label>Easy</label>
-            <label>Medium</label>
-            <label>Hard</label>
+            <label th:each="difficulty : ${navigationData.difficulties}" th:text="${difficulty.name}"></label>
         </div>
     </div>
 
     <div class="dropdown">
         <button class="dropdown-button">Events</button>
         <div id="event-menu" class="dropdown-content">
-            <label>Christmas</label>
-            <label>Easter</label>
-            <label>Valentine's Day</label>
-            <label>Birthday</label>
-            <label>Casual</label>
+            <label th:each="event : ${navigationData.events}" th:text="${event.name}"></label>
         </div>
     </div>
 

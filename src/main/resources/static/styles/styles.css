@@ -1,10 +1,29 @@
-/*HEADER*/
+/*MAIN*/
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     background: #f8f9fa;
 }
+
+input {
+    font-size: 1.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+select {
+    font-size: 1.25rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+span.bold {
+    font-weight: bold;
+}
+
+/*HEADER*/
 
 .header {
     background-color: #ff6f61;
@@ -15,7 +34,7 @@ body {
     align-items: center;
 }
 
-.logo{
+.logo {
     width: 100px;
     height: 100px;
 }
@@ -70,7 +89,7 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-a.dropdown-button{
+a.dropdown-button {
     color: white;
     text-decoration: none;
 }
@@ -79,7 +98,7 @@ a.dropdown-button{
     display: none;
     position: absolute;
     background-color: #fff;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     width: 100%;
     max-height: 150px;
     overflow-y: auto;
@@ -107,9 +126,10 @@ a.dropdown-button{
 .featured-recipes {
     margin-top: 20px;
     display: flex;
+    flex-wrap: wrap;
 }
 
-section header{
+section header {
     background: #ff6f61;
     color: white;
     padding: 10px;
@@ -118,17 +138,7 @@ section header{
     text-align: center;
 }
 
-/*.category {*/
-/*    display: inline-block;*/
-/*    padding: 10px 20px;*/
-/*    background: #ff6f61;*/
-/*    color: white;*/
-/*    border-radius: 20px;*/
-/*    margin: 5px;*/
-/*    cursor: pointer;*/
-/*}*/
-
-.recipe-card {
+.recipe-card, .profile-check-card {
     border: 1px solid #ddd;
     padding: 20px;
     margin: 10px 10px;
@@ -137,11 +147,11 @@ section header{
     transition: box-shadow 0.1s ease-in-out;
 }
 
-.recipe-card div{
+.recipe-card div, .profile-check-card div {
     text-align: center;
 }
 
-.recipe-card:hover {
+.recipe-card:hover, .profile-check-card:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -187,9 +197,61 @@ section header{
     background-color: #007bff;
 }
 
-/*LOGIN PAGE*/
-.login-container {
-    max-width: 400px;
+/*SEARCH*/
+
+.search-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.search-input-container {
+    width: 90%;
+}
+
+.search-input {
+    width: 100%;
+    padding: 10px;
+    margin-right: 10px;
+}
+
+.search-btn {
+    font-size: 1.5rem;
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.search-advanced {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    margin-top: 20px;
+    padding-top: 20px;
+
+}
+
+.search-advanced > *:not(:first-child) {
+    margin-top: 20px;
+}
+
+.options-advanced {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+}
+
+.options-advanced select {
+    width: 80%;
+}
+
+/*LOGIN/REGISTER PAGE*/
+.login-container, .register-container {
+    max-width: 500px;
     margin: 50px auto;
     padding: 20px;
     border: 1px solid #ddd;
@@ -197,21 +259,21 @@ section header{
     background: white;
 }
 
-.login-container label {
+.login-container label, .register-container label {
     display: block;
     margin-bottom: 5px;
     color: #333;
 }
 
-.login-container input {
-    width: 100%;
-    padding: 10px;
+.login-container input, .register-container input {
+    width: 95%;
+    padding: 10px 10px;
     margin-bottom: 15px;
     border: 1px solid #ddd;
     border-radius: 5px;
 }
 
-.login-btn {
+.login-btn, .register-btn {
     width: 100%;
     padding: 10px;
     background-color: #007bff;
@@ -221,6 +283,22 @@ section header{
     cursor: pointer;
 }
 
+/*PROFILE*/
+
+.profile-container {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+}
+
+.profile-container div h3 {
+    margin-left: 10px;
+}
+
+.profile-check-card {
+    flex: 1;
+    white-space: nowrap;
+}
 
 /*ADD RECIPE*/
 .add-recipe-container {
