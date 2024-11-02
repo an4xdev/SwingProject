@@ -23,6 +23,70 @@ span.bold {
     font-weight: bold;
 }
 
+.black-button{
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    margin: 0 5px;
+    border-radius: 5px;
+    background: #333;
+    cursor: pointer;
+}
+
+.black-button:hover {
+    background: #555;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.p1rem {
+    padding: 1rem;
+}
+
+.p05rem {
+    padding: 0.5rem;
+}
+
+.text-end{
+    text-align: end;
+}
+
+.red-border{
+    border: 1px solid #ff6f61
+}
+
+.dflex{
+    display: flex;
+}
+
+.flex1{
+    flex: 1;
+}
+
+.flex-column{
+    flex-direction: column;
+}
+
+.align-items-center{
+    align-items: center;
+}
+
+.justify-content-between{
+    justify-content: space-between;
+}
+
+.flex-wrap{
+    flex-wrap: wrap;
+}
+
+/*CONTAINER*/
+
+.container {
+    display: flex;
+}
+
 /*HEADER*/
 
 .header {
@@ -47,15 +111,6 @@ span.bold {
 .header nav {
     display: flex;
     justify-content: center;
-}
-
-.header nav a {
-    color: white;
-    text-decoration: none;
-    padding: 10px 20px;
-    margin: 0 5px;
-    border-radius: 5px;
-    background: #333;
 }
 
 /*NAV*/
@@ -129,7 +184,7 @@ a.dropdown-button {
     flex-wrap: wrap;
 }
 
-section header {
+.body-header{
     background: #ff6f61;
     color: white;
     padding: 10px;
@@ -138,7 +193,26 @@ section header {
     text-align: center;
 }
 
-.recipe-card, .profile-check-card {
+main header {
+    background: #ff6f61;
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 10px 0;
+    text-align: center;
+}
+
+section header{
+    border: 1px solid #ff6f61;
+    background: white;
+    color: #ff6f61;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 10px 0;
+    text-align: start;
+}
+
+.recipe-card, .profile-check-card, .admin-manage-card {
     border: 1px solid #ddd;
     padding: 20px;
     margin: 10px 10px;
@@ -147,11 +221,11 @@ section header {
     transition: box-shadow 0.1s ease-in-out;
 }
 
-.recipe-card div, .profile-check-card div {
+.recipe-card div, .profile-check-card div, .admin-manage-card div {
     text-align: center;
 }
 
-.recipe-card:hover, .profile-check-card:hover {
+.recipe-card:hover, .profile-check-card:hover, .admin-manage-card:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 

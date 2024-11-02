@@ -39,4 +39,14 @@ public class IndexController {
     public String profile() {
         return "profile";
     }
+
+    @GetMapping("/admin")
+    public String admin() {
+        return "admin-panel";
+    }
+
+    @GetMapping("/manage")
+    public String manage() {
+        return "manage";
+    }
 }
