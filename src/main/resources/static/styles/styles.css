@@ -324,7 +324,7 @@ section header{
 }
 
 /*LOGIN/REGISTER PAGE*/
-.login-container, .register-container {
+.login-container, .register-container, .add-recipe-container {
     max-width: 500px;
     margin: 50px auto;
     padding: 20px;
@@ -375,22 +375,26 @@ section header{
 }
 
 /*ADD RECIPE*/
-.add-recipe-container {
-    max-width: 500px;
-    margin: 50px auto;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    background: white;
-}
+/*.add-recipe-container {*/
+/*    max-width: 500px;*/
+/*    margin: 50px auto;*/
+/*    padding: 20px;*/
+/*    border: 1px solid #ddd;*/
+/*    border-radius: 10px;*/
+/*    background: white;*/
+/*}*/
 
 .add-recipe-container textarea {
-    width: 100%;
+    width: 95%;
+    margin: 0 auto 15px auto;
     padding: 10px;
     height: 100px;
-    margin-bottom: 15px;
     border: 1px solid #ddd;
     border-radius: 5px;
+}
+
+.add-recipe-form-panel{
+    margin-bottom: 15px;
 }
 
 .submit-recipe-btn {
