@@ -18,16 +18,15 @@
     <form th:action="@{/add_recipe}" th:object="${recipeForm}" method="post" enctype="multipart/form-data">
         <div class="add-recipe-form-panel">
             <label for="title">Recipe Title</label>
-            <input type="text" id="title" name="title" required>
+            <input type="text" id="title" name="title" required th:field="*{name}">
         </div>
 
         <div class="add-recipe-form-panel">
             <h3>Upload Images</h3>
             <div id="image-upload-section">
                 <label for="image">Image:</label>
-                <input type="file" name="images" id="image" required accept="image/*">
+                <input type="file" name="images" id="image" required accept="image/*" th:field="*{image}">
             </div>
-            <button type="button" id="add-image-field">Add Another Image</button>
         </div>
 
         <div class="add-recipe-form-panel">
@@ -38,6 +37,7 @@
                         th:text="${ingredient.name}"></option>
             </select>
         </div>
+
         <div class="add-recipe-form-panel">
             <div id="selected-ingredients">
                 <h3>Selected Ingredients:</h3>
@@ -52,16 +52,15 @@
         </div>
 
         <div class="add-recipe-form-panel">
-            <label for="instructions">Instructions</label>
-            <textarea id="instructions" name="instructions" required></textarea>
+            <h3>New Steps</h3>
+            <div id="new-steps"></div>
+            <button type="button" id="add-step">Add New Step</button>
         </div>
 
         <div class="add-recipe-form-panel">
             <label for="difficulty">Difficulty</label>
             <select id="difficulty" name="difficulty">
-                <option value="easy">Easy</option>
-                <option value="medium">Medium</option>
-                <option value="hard">Hard</option>
+                <option th:each="difficulty : *{difficulties}" th:value="${difficulty.id}" th:text="${difficulty.name}" th:field="*{difficulties}" th:id="${difficulty}"></option>
             </select>
         </div>
         <button type="submit" class="submit-recipe-btn">Add Recipe</button>
@@ -72,20 +71,7 @@
     $(document).ready(function () {
         let ingredientIndex = 0;
         let ingredientAddedIndex = 0;
-        let fileIndex = 1;
-
-        $('#add-image-field').on('click', function() {
-            $('#image-upload-section').append(`
-            <div>
-                <input type="file" name="images" accept="image/*"/>
-                <button type="button" class="remove-image-field">Remove</button>
-            </div>
-        `);
-        });
-
-        $('#image-upload-section').on('click', '.remove-image-field', function() {
-            $(this).parent().remove();
-        });
+        let stepIndex = 0;
 
         $('#add-ingredient').on('click', function () {
             $('#new-ingredients').append(`
@@ -125,6 +111,20 @@
         });
 
         $('#ingredient-list').on('click', '.remove-selected-ingredient', function () {
+            $(this).parent().remove();
+        });
+
+        $('#add-step').on('click', function () {
+            $('#new-steps').append(`
+            <div>
+                <input type="text" name="steps[${stepIndex}].description" placeholder="New Step Description"/>
+                <button type="button" class="remove-step">Remove</button>
+            </div>
+        `);
+            stepIndex++;
+        });
+
+        $('#new-steps').on('click', '.remove-step', function () {
             $(this).parent().remove();
         });
     });

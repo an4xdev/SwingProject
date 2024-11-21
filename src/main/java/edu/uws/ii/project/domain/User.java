@@ -1,11 +1,19 @@
 package edu.uws.ii.project.domain;
 
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@Data
 @Table(name = "\"user\"")
 public class User {
     @Id

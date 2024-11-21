@@ -1,7 +1,10 @@
 package edu.uws.ii.project.controllers;
 
+import edu.uws.ii.project.Repositories.DifficultyRepository;
+import edu.uws.ii.project.Repositories.IngredientRepository;
 import edu.uws.ii.project.dtos.AddFormDTO;
 import edu.uws.ii.project.dtos.IngredientDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +24,15 @@ public class IndexController {
 
     private static final String UPLOAD_DIR = "src/main/resources/static/user_images/";
 
+    private final IngredientRepository ingredientRepository;
+    private final DifficultyRepository difficultyRepository;
+
+    @Autowired
+    public IndexController(IngredientRepository ingredientRepository, DifficultyRepository difficultyRepository) {
+        this.ingredientRepository = ingredientRepository;
+        this.difficultyRepository = difficultyRepository;
+    }
+
     @GetMapping("/")
     public String index() {
         return "index";
@@ -38,35 +50,28 @@ public class IndexController {
 
     @GetMapping("/add_recipe")
     public String addRecipe(Model model) {
-        List<IngredientDTO> ingredientDTOList = new ArrayList<>() {{
-            add(new IngredientDTO(1L, "ingredient1"));
-            add(new IngredientDTO(2L, "ingredient2"));
-        }};
-        AddFormDTO recipeForm = new AddFormDTO(1L, "recipe1", ingredientDTOList, new ArrayList<>());
+        AddFormDTO recipeForm = new AddFormDTO(1L, "recipe1", ingredientRepository.findAll(), difficultyRepository.findAll());
         model.addAttribute("recipeForm", recipeForm);
         return "add_recipe";
     }
 
     @PostMapping("/add_recipe")
     public String addRecipe(@ModelAttribute("recipeForm") AddFormDTO recipeForm) {
-        MultipartFile[] files = recipeForm.getImages();
+        MultipartFile file = recipeForm.getImage();
 
-        if(files != null) {
-            for(MultipartFile file : files) {
-                if (file != null && !file.isEmpty()) {
-                    try {
-                        Files.createDirectories(Paths.get(UPLOAD_DIR));
+        if (file != null && !file.isEmpty()) {
+            try {
+                Files.createDirectories(Paths.get(UPLOAD_DIR));
 
-                        Path filePath = Paths.get(UPLOAD_DIR + file.getOriginalFilename());
-                        Files.write(filePath, file.getBytes());
+                Path filePath = Paths.get(UPLOAD_DIR + file.getOriginalFilename());
+                Files.write(filePath, file.getBytes());
 
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        return "redirect:/add_recipe";
-                    }
-                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "redirect:/add_recipe";
             }
         }
+
         return "redirect:/add_recipe";
     }
 

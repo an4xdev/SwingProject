@@ -1,12 +1,22 @@
 package edu.uws.ii.project.domain;
 
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@Data
 public class Recipe {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,27 +33,17 @@ public class Recipe {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "recipeIng", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "recipeId", cascade = CascadeType.ALL)
     private List<Ingredient> ingredients = new ArrayList<>();
 
     @OneToMany(mappedBy = "recipeComm", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "recipe_category",
-            joinColumns = @JoinColumn(name = "recipe_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id")
-    )
-    private List<Category> categories = new ArrayList<>();
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Category> categories = new HashSet<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "recipe_tag",
-            joinColumns = @JoinColumn(name = "recipe_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
-    private List<Tag> tags = new ArrayList<>();
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Tag> tags = new HashSet<>();
 
     @OneToMany(mappedBy = "recipeStep", cascade = CascadeType.ALL)
     private List<Steps> steps = new ArrayList<>();
