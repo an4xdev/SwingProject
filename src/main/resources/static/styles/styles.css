@@ -406,3 +406,14 @@ section header{
     border-radius: 5px;
     cursor: pointer;
 }
+
+
+.error-container{
+    text-align: center;
+    margin: 10px;
+    padding: 10px;
+}
+
+.error-container h2{
+    color: #ff6f61;
+}

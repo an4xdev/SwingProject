@@ -2,6 +2,17 @@
     <img src="/images/logo.png" alt="Recipe Book Logo" class="logo">
     <h1>Welcome to Our Recipe Book</h1>
     <nav>
-        <a th:href="@{/login}" class="black-button">Login</a>
+        <div th:if="${#authentication.name != 'anonymousUser'}">
+            <span>Welcome,
+                <a th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" th:href="@{/admin}">[[${#authentication.name}]]</a>
+                <a th:if="${#authorization.expression('!hasRole(''ROLE_ADMIN'')')}" th:href="@{/profile}">[[${#authentication.name}]]</a>
+            </span>
+            <form th:action="@{/logout}" method="post" style="display: inline;">
+                <button type="submit" class="black-button">Logout</button>
+            </form>
+        </div>
+        <div th:if="${#authentication.name == 'anonymousUser'}">
+            <a th:href="@{/login}" class="black-button">Login</a>
+        </div>
     </nav>
 </header>

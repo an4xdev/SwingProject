@@ -6,8 +6,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.time.LocalDate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class RepositoryInitializer {
@@ -18,15 +17,19 @@ public class RepositoryInitializer {
     private final RoleRepository roleRepository;
     private final TagRepository tagRepository;
     private final IngredientRepository ingredientRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public RepositoryInitializer(CategoryRepository categoryRepository, DifficultyRepository difficultyRepository, EventRepository eventRepository, RoleRepository roleRepository, TagRepository tagRepository, IngredientRepository ingredientRepository) {
+    public RepositoryInitializer(CategoryRepository categoryRepository, DifficultyRepository difficultyRepository, EventRepository eventRepository, RoleRepository roleRepository, TagRepository tagRepository, IngredientRepository ingredientRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.categoryRepository = categoryRepository;
         this.difficultyRepository = difficultyRepository;
         this.eventRepository = eventRepository;
         this.roleRepository = roleRepository;
         this.tagRepository = tagRepository;
         this.ingredientRepository = ingredientRepository;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Bean
@@ -53,10 +56,23 @@ public class RepositoryInitializer {
             }
 
             if (roleRepository.count() == 0) {
-                Role role1 = new Role("Admin");
-                Role role2 = new Role("User");
-                roleRepository.save(role1);
-                roleRepository.save(role2);
+                Role adminRole = new Role("ROLE_ADMIN");
+                Role userRole = new Role("ROLE_USER");
+                roleRepository.save(adminRole);
+                roleRepository.save(userRole);
+            }
+
+            if(userRepository.count() == 0) {
+                Role adminRole = roleRepository.findByName("ROLE_ADMIN");
+                Role userRole = roleRepository.findByName("ROLE_USER");
+
+                User admin = new User("admin", passwordEncoder.encode("admin"), "admin@example.com");
+                admin.getRoles().add(adminRole);
+                userRepository.save(admin);
+
+                User user = new User("user", passwordEncoder.encode("user"), "user@example.com");
+                user.getRoles().add(userRole);
+                userRepository.save(user);
             }
 
             if (tagRepository.count() == 0) {
@@ -71,9 +87,9 @@ public class RepositoryInitializer {
             }
 
             if (eventRepository.count() == 0) {
-                Event event1 = new Event("Birthday", null);
-                Event event2 = new Event("Anniversary", null);
-                Event event3 = new Event("Christmas", LocalDate.of(2021, 12, 25));
+                Event event1 = new Event("Birthday");
+                Event event2 = new Event("Anniversary");
+                Event event3 = new Event("Christmas");
                 eventRepository.save(event1);
                 eventRepository.save(event2);
                 eventRepository.save(event3);

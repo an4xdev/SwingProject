@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internal Server Error - Online Recipe Book</title>
+    <link rel="stylesheet" href="/styles/styles.css">
+</head>
+<body>
+<div th:insert="~{fragments/header :: header}"></div>
+<main>
+    <div class="error-container">
+        <h2>Internal Server Error</h2>
+        <p>Something went wrong on our end. Please try again later.</p>
+        <a th:href="@{/}" class="black-button">Go to Home</a>
+    </div>
+</main>
+<div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+</html>

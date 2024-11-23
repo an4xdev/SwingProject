@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
-
 @Entity
 @Getter
 @Setter
@@ -18,14 +16,12 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private LocalDate date;
 
     @ManyToOne
     @JoinColumn(name = "recipe_id")
     private Recipe recipeEvent;
 
-    public Event(String name, LocalDate date) {
+    public Event(String name) {
         this.name = name;
-        this.date = date;
     }
 }
