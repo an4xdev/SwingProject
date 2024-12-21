@@ -2,7 +2,7 @@ package edu.uws.ii.project.dtos;
 
 import edu.uws.ii.project.domain.Difficulty;
 import edu.uws.ii.project.domain.Ingredient;
-import edu.uws.ii.project.domain.Steps;
+import edu.uws.ii.project.domain.Step;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,7 +21,7 @@ public class AddFormDTO {
     private MultipartFile image;
     private List<Ingredient> ingredientsAdded;
     private List<Difficulty> difficulties;
-    private List<Steps> steps;
+    private List<Step> steps;
 
     public AddFormDTO(Long id, String name, List<Ingredient> ingredients, List<Difficulty> difficulties) {
         this.id = id;

@@ -5,23 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - Online Recipe Book</title>
     <link rel="stylesheet" href="/styles/styles.css">
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <!--    <link rel="stylesheet" th:href="@{/styles/styles.css}">-->
 </head>
 <body>
 <div th:insert="~{fragments/header :: header}"></div>
 <div th:insert="~{fragments/nav :: div}"></div>
-    <main class="content">
-        <section>
-            <header>
-                <h2>Newest Recipes</h2>
-            </header>
-            <div class="featured-recipes">
-                <div th:insert="~{fragments/recipe_card :: div}"></div>
-                <div th:insert="~{fragments/recipe_card :: div}"></div>
-                <div th:insert="~{fragments/recipe_card :: div}"></div>
-            </div>
-        </section>
-    </main>
-    <div th:insert="~{fragments/footer :: footer}"></div>
+<main class="content">
+    <section>
+        <header>
+            <h2>Newest Recipes</h2>
+        </header>
+        <div class="featured-recipes">
+            <div th:each="recipe : ${recipes.content}" th:insert="~{fragments/recipe_card :: div(recipe=${recipe})}"
+                 style="max-width: 33%"></div>
+        </div>
+
+        <div class="pagination" th:if="${recipes != null}">
+
+            <a th:href="@{/recipes/page(size=${recipes.size},page=${recipes.number-1})}"
+               th:if="${recipes.hasPrevious()}" class="previous">Previous</a>
+
+            <span th:text="${recipes.number + 1}" class="current"></span> <span class="separator">/</span> <span th:text="${recipes.totalPages}" class="total"></span>
+
+            <a th:href="@{/recipes/page(size=${recipes.size},page=${recipes.number+1})}"
+               th:if="${recipes.hasNext()}" class="next">Next</a>
+
+            <a th:href="@{/recipes/page(size=${recipes.size},page=${recipes.totalPages - 1})}"
+               th:if="${recipes.totalPages > 1 && recipes.number < recipes.totalPages - 1}" class="last">Last</a>
+        </div>
+    </section>
+</main>
+<div th:insert="~{fragments/footer :: footer}"></div>
 </body>
 </html>

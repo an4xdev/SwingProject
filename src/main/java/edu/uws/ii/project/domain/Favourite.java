@@ -11,7 +11,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Data
-public class Favorite {
+@Table(name = "favourites")
+public class Favourite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,4 +23,9 @@ public class Favorite {
     @ManyToOne
     @JoinColumn(name = "recipe_id")
     private Recipe recipeFav;
+
+    public Favourite(User user, Recipe recipeFav) {
+        this.user = user;
+        this.recipeFav = recipeFav;
+    }
 }

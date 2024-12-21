@@ -6,20 +6,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Set;
+
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @Data
+@Table(name = "events")
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "recipe_id")
-    private Recipe recipeEvent;
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Recipe> recipes;
 
     public Event(String name) {
         this.name = name;

@@ -11,7 +11,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Data
-public class Steps {
+@Table(name = "steps")
+public class Step {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,11 +20,12 @@ public class Steps {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "recipe_step_id")
-    private Recipe recipeStep;
+    @JoinColumn(name = "recipe_id", nullable = false)
+    private Recipe recipe;
 
-    public Steps(Integer stepNumber, String description) {
+    public Step( String description, Integer stepNumber, Recipe recipe) {
         this.stepNumber = stepNumber;
         this.description = description;
+        this.recipe = recipe;
     }
 }

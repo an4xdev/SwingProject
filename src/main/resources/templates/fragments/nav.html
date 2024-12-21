@@ -5,21 +5,27 @@
     <div class="dropdown">
         <button class="dropdown-button">Categories</button>
         <div id="category-menu" class="dropdown-content">
-            <label th:each="category : ${navigationData.categories}" th:text="${category.name}"></label>
+            <label th:each="category : ${navigationData.categories}" >
+                <a th:href="@{/recipes/category/{category}(category=${category.name})}" th:text="${category.name}"></a>
+            </label>
         </div>
     </div>
 
     <div class="dropdown">
         <button class="dropdown-button">Difficulty</button>
         <div id="difficulty-menu" class="dropdown-content">
-            <label th:each="difficulty : ${navigationData.difficulties}" th:text="${difficulty.name}"></label>
+            <label th:each="difficulty : ${navigationData.difficulties}">
+                <a th:href="@{/recipes/difficulty/{difficulty}(difficulty=${difficulty.name})}" th:text="${difficulty.name}"></a>
+            </label>
         </div>
     </div>
 
     <div class="dropdown">
         <button class="dropdown-button">Events</button>
         <div id="event-menu" class="dropdown-content">
-            <label th:each="event : ${navigationData.events}" th:text="${event.name}"></label>
+            <label th:each="event : ${navigationData.events}">
+                <a th:href="@{/recipes/event/{event}(event=${event.name})}" th:text="${event.name}"></a>
+            </label>
         </div>
     </div>
 

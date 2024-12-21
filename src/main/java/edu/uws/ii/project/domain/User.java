@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 @Data
-@Table(name = "\"user\"")
+@Table(name = "users")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,14 +59,22 @@ public class User implements UserDetails {
         return true;
     }
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Recipe> recipes = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments;
 
-    @OneToMany(mappedBy = "userComm", cascade = CascadeType.ALL)
-    private List<Comment> comments = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Favourite> favourites;
 
-    @OneToMany(mappedBy = "userHistory", cascade = CascadeType.ALL)
-    private List<RecipeHistory> recipeHistories = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RecipeHistory> recipeHistories;
+
+    @ManyToMany
+    @JoinTable(
+            name = "favourites",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "recipe_id")
+    )
+    private Set<Recipe> favouriteRecipes;
 
     public User(String username, String password, String email) {
         this.username = username;

@@ -1,7 +1,7 @@
 package edu.uws.ii.project.Repositories;
 
-import edu.uws.ii.project.domain.Tag;
+import edu.uws.ii.project.domain.Step;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TagRepository extends JpaRepository<Tag, Long> {
+public interface StepRepository extends JpaRepository<Step, Long> {
 }

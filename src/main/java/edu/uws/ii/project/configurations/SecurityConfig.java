@@ -25,9 +25,10 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/styles/**", "/js/**", "/images/**").permitAll()
-                        .requestMatchers("/register").permitAll()
+                        .requestMatchers("/register").permitAll())
+                .authorizeHttpRequests((requests -> requests
                         .requestMatchers("/admin").hasRole("ADMIN")
-                        .anyRequest().authenticated())
+                        .anyRequest().authenticated()))
                 .formLogin((form) -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/", true)

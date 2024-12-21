@@ -6,25 +6,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @Data
+@Table(name = "categories")
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Recipe> recipesCategories = new HashSet<>();
-
 
     public Category(String name) {
         this.name = name;

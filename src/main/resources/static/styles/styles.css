@@ -113,6 +113,14 @@ span.bold {
     justify-content: center;
 }
 
+.header-button {
+    color: #ff5f51;
+    background-color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
 /*NAV*/
 .menu-container {
     padding: 0 20px;
@@ -240,6 +248,25 @@ section header{
 
 .view-recipe-btn:hover {
     background-color: #ff5f51;
+}
+
+.pagination{
+    margin-top: 1rem;
+    text-align: center;
+    font-size: larger;
+}
+
+.separator {
+    color: #ff6f61;;
+}
+
+.previous, .next, .last{
+    text-decoration: none;
+    color: white;
+    background-color: #ff6f61;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
 }
 
 /*FOOTER*/

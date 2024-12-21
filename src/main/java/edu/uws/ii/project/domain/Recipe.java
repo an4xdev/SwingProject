@@ -7,9 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -17,6 +14,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @Data
+@Table(name = "recipes")
 public class Recipe {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,31 +31,55 @@ public class Recipe {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "recipeId", cascade = CascadeType.ALL)
-    private List<Ingredient> ingredients = new ArrayList<>();
-
-    @OneToMany(mappedBy = "recipeComm", cascade = CascadeType.ALL)
-    private List<Comment> comments = new ArrayList<>();
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Category> categories = new HashSet<>();
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Tag> tags = new HashSet<>();
-
-    @OneToMany(mappedBy = "recipeStep", cascade = CascadeType.ALL)
-    private List<Steps> steps = new ArrayList<>();
-
     @ManyToOne
-    @JoinColumn(name = "difficulty_id")
+    @JoinColumn(name = "difficulty_id", nullable = false)
     private Difficulty difficulty;
 
-    @OneToMany(mappedBy = "recipeHistory", cascade = CascadeType.ALL)
-    private List<RecipeHistory> recipeHistories = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
 
-    @OneToMany(mappedBy = "recipeFav", cascade = CascadeType.ALL)
-    private List<Favorite> favorites = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(
+            name = "recipes_events",
+            joinColumns = @JoinColumn(name = "recipe_id"),
+            inverseJoinColumns = @JoinColumn(name = "event_id")
+    )
+    private Set<Event> events;
 
-    @OneToMany(mappedBy = "recipeEvent", cascade = CascadeType.ALL)
-    private List<Event> events = new ArrayList<>();
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Comment> comments;
+
+    @ManyToMany
+    @JoinTable(
+            name = "recipes_ingredients",
+            joinColumns = @JoinColumn(name = "recipe_id"),
+            inverseJoinColumns = @JoinColumn(name = "ingredient_id")
+    )
+    private Set<Ingredient> ingredients;
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Step> steps;
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<RecipeHistory> recipeHistories;
+
+    @ManyToMany(mappedBy = "favouriteRecipes")
+    private Set<User> favouriteByUsers;
+
+    public Recipe(String name, String description, String photoPath, Integer cookingTime, Float rating, Boolean requireOven, LocalDateTime createdAt, User user, Set<Ingredient> ingredients, Category category, Difficulty difficulty, Set<Event> events) {
+        this.id = null;
+        this.name = name;
+        this.description = description;
+        this.photoPath = photoPath;
+        this.cookingTime = cookingTime;
+        this.rating = rating;
+        this.requireOven = requireOven;
+        this.createdAt = createdAt;
+        this.user = user;
+        this.ingredients = ingredients;
+        this.category = category;
+        this.difficulty = difficulty;
+        this.events = events;
+    }
 }

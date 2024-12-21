@@ -11,6 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Data
+@Table(name = "comments")
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,10 +19,16 @@ public class Comment {
     private String content;
 
     @ManyToOne
-    @JoinColumn(name = "recipe_id")
-    private Recipe recipeComm;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User userComm;
+    @JoinColumn(name = "recipe_id", nullable = false)
+    private Recipe recipe;
+
+    public Comment(String content, Recipe recipe, User user) {
+        this.content = content;
+        this.recipe = recipe;
+        this.user = user;
+    }
 }

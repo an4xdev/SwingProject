@@ -4,8 +4,11 @@
     <nav>
         <div th:if="${#authentication.name != 'anonymousUser'}">
             <span>Welcome,
-                <a th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" th:href="@{/admin}">[[${#authentication.name}]]</a>
-                <a th:if="${#authorization.expression('!hasRole(''ROLE_ADMIN'')')}" th:href="@{/profile}">[[${#authentication.name}]]</a>
+                <span th:text="${#authentication.name}"></span>
+
+                <a th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" th:href="@{/admin}" class="header-button">Admin dashboard</a>
+
+                <a th:if="${#authorization.expression('!hasRole(''ROLE_ADMIN'')')}" th:href="@{/profile}" class="header-button">My profile</a>
             </span>
             <form th:action="@{/logout}" method="post" style="display: inline;">
                 <button type="submit" class="black-button">Logout</button>
