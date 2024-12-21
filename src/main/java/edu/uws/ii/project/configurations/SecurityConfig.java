@@ -1,6 +1,6 @@
 package edu.uws.ii.project.configurations;
 
-import edu.uws.ii.project.services.CustomUserDetailsService;
+import edu.uws.ii.project.services.user.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,10 +25,22 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/styles/**", "/js/**", "/images/**").permitAll()
-                        .requestMatchers("/register").permitAll())
+                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/403").permitAll()
+                        .requestMatchers("/404").permitAll()
+                        .requestMatchers("/500").permitAll()
+                        .requestMatchers("/error").permitAll()
+                        .requestMatchers("/register").permitAll()
+                        .requestMatchers("/search").permitAll()
+                )
                 .authorizeHttpRequests((requests -> requests
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated()))
+                .authorizeHttpRequests((requests) -> requests
+                        .requestMatchers("/recipes/**").authenticated()
+                        .requestMatchers("/user/**").authenticated()
+                        .requestMatchers("/profile/**").authenticated()
+                )
                 .formLogin((form) -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/", true)

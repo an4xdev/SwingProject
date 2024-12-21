@@ -17,7 +17,8 @@
         </header>
         <div class="featured-recipes">
             <div th:each="recipe : ${recipes.content}" th:insert="~{fragments/recipe_card :: div(recipe=${recipe})}"
-                 style="max-width: 33%"></div>
+                 class="w33">
+            </div>
         </div>
 
         <div class="pagination" th:if="${recipes != null}">

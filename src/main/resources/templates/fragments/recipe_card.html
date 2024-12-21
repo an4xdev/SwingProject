@@ -1,8 +1,8 @@
 <div class="recipe-card">
     <div>
-        <img th:src="@{/images/logo.png}" alt="Recipe Image" style="width: 200px;height: 200px">
+        <img th:src="${recipe.photoPath}" alt="Recipe Image" style="width: 200px;height: 200px">
     </div>
-    <h3 th:text="${recipe.name}">Recipe Name</h3>
-    <p th:text="${recipe.description}">Recipe Description</p>
-    <button class="view-recipe-btn">View Recipe</button>
+    <h3 th:text="${recipe.name}"></h3>
+    <p th:text="${recipe.description}"></p>
+    <a class="view-recipe-btn" th:href="@{/recipes/{id}(id=${recipe.id})}">View Recipe</a>
 </div>

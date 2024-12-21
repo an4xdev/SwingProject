@@ -54,7 +54,7 @@ span.bold {
 }
 
 .red-border{
-    border: 1px solid #ff6f61
+    border: 1px solid #ff6f61;
 }
 
 .dflex{
@@ -114,7 +114,7 @@ span.bold {
 }
 
 .header-button {
-    color: #ff5f51;
+    color: #ff6f61;
     background-color: white;
     padding: 10px 20px;
     border-radius: 5px;
@@ -168,12 +168,20 @@ a.dropdown-button {
     z-index: 1;
 }
 
-.dropdown-content label {
+.dropdown-content a {
+    text-decoration: none;
+}
+
+.dropdown-content a label {
     display: block;
     padding: 8px 10px;
     font-size: 14px;
     cursor: pointer;
     color: #333;
+}
+
+.w33 {
+    width: 33%;
 }
 
 .dropdown-content label:hover {
@@ -244,6 +252,7 @@ section header{
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    text-decoration: none;
 }
 
 .view-recipe-btn:hover {

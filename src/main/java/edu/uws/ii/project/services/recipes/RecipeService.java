@@ -6,9 +6,12 @@ import edu.uws.ii.project.Repositories.EventRepository;
 import edu.uws.ii.project.Repositories.RecipeRepository;
 import edu.uws.ii.project.domain.Recipe;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +36,9 @@ public class RecipeService implements IRecipeService {
 
     @Override
     public Page<Recipe> getPage(Pageable pageable) {
-        return recipeRepository.findAll(pageable);
+        Pageable sortedByDate = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                Sort.by("createdAt").descending());
+        return recipeRepository.findAll(sortedByDate);
     }
 
     @Override
@@ -56,7 +61,7 @@ public class RecipeService implements IRecipeService {
     @Override
     public List<Recipe> findByEvent(String event) {
         var ev = eventRepository.findByName(event);
-        return recipeRepository.findAllByEvents(ev);
+        return recipeRepository.findAllByEvents(new HashSet<>(List.of(ev)));
     }
 }
 

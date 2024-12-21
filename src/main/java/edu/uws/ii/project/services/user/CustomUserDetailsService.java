@@ -1,4 +1,4 @@
-package edu.uws.ii.project.services;
+package edu.uws.ii.project.services.user;
 
 import edu.uws.ii.project.Repositories.UserRepository;
 import edu.uws.ii.project.domain.User;

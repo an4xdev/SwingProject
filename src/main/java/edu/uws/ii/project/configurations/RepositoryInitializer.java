@@ -124,21 +124,21 @@ public class RepositoryInitializer {
             // Initialize recipes
             Recipe pancakes = new Recipe("Pancakes", "Pancakes are a breakfast staple and are loved by many. They are easy to make and can be customized to your liking.", "/user_images/chmura.jpg", 20, 8.75f, false, LocalDateTime.now(), user1, new HashSet<>(List.of(sugar, milk, flour, eggs)), breakfast, easy, new HashSet<>(List.of(casual)));
 
-            Recipe strawberryCake = new Recipe("Strawberry Cake", "Strawberry Cake is great cake for special events", "/user_images/chmura.jpg", 30, 6.87f, true, LocalDateTime.now(), user2 ,new HashSet<>(List.of(sugar, milk, flour,eggs, strawberries)), dessert, medium, new HashSet<>(List.of(birthday, anniversary, christmas)));
+            Recipe strawberryCake = new Recipe("Strawberry Cake", "Strawberry Cake is great cake for special events", "/user_images/chmura.jpg", 30, 6.87f, true, LocalDateTime.now(), user1 ,new HashSet<>(List.of(sugar, milk, flour,eggs, strawberries)), dessert, medium, new HashSet<>(List.of(birthday, anniversary, christmas)));
 
-            Recipe spaghettiCarbonara = new Recipe("Spaghetti carbonara", "Great italian dish for dinner.", "/user_images/chmura.jpg", 30, 5.20f, false, LocalDateTime.now(), user3, new HashSet<>(List.of(pasta, milk, beef)), dinner, hard, new HashSet<>(List.of(casual)));
+            Recipe spaghettiCarbonara = new Recipe("Spaghetti carbonara", "Great italian dish for dinner.", "/user_images/chmura.jpg", 30, 5.20f, false, LocalDateTime.now(), user1, new HashSet<>(List.of(pasta, milk, beef)), dinner, hard, new HashSet<>(List.of(casual)));
 
-            Recipe sandwich = new Recipe("Sandwich", "Simple sandwich for quick breakfast.", "/user_images/chmura.jpg", 30, 4.20f, false, LocalDateTime.now(), user3, new HashSet<>(List.of(bread, cheese, ham)), breakfast, easy, new HashSet<>(List.of(casual)));
+            Recipe sandwich = new Recipe("Sandwich", "Simple sandwich for quick breakfast.", "/user_images/chmura.jpg", 30, 4.20f, false, LocalDateTime.now(), user1, new HashSet<>(List.of(bread, cheese, ham)), breakfast, easy, new HashSet<>(List.of(casual)));
 
-            Recipe pomodoroSoup = new Recipe("Pomodoro Soup", "Simple pomodoro soup from broth from yesterday", "/user_images/chmura.jpg", 30, 7.65f, false, LocalDateTime.now(), user1 ,new HashSet<>(List.of(tomatoSauce, pasta)), dinner, medium, new HashSet<>(List.of(casual)));
+            Recipe pomodoroSoup = new Recipe("Pomodoro Soup", "Simple pomodoro soup from broth from yesterday", "/user_images/chmura.jpg", 30, 7.65f, false, LocalDateTime.now(), user2 ,new HashSet<>(List.of(tomatoSauce, pasta)), dinner, medium, new HashSet<>(List.of(casual)));
 
             Recipe beefWithPotatoes = new Recipe("Beef with potatoes", "Classic dinner for casual and specials events.", "/user_images/chmura.jpg", 30, 9.81f, false, LocalDateTime.now(), user2, new HashSet<>(List.of(potatoes, beef)), dinner, hard, new HashSet<>(List.of(casual, birthday, anniversary)));
 
-            Recipe hawaiianPizza = new Recipe("Hawaiian pizza", "Only true pizza, change my mind.", "/user_images/chmura.jpg", 30, 9.99f, true, LocalDateTime.now(), user2 ,new HashSet<>(List.of(flour, eggs, pineapple, ham)), dinner, medium, new HashSet<>(List.of(casual, birthday)));
+            Recipe hawaiianPizza = new Recipe("Hawaiian pizza", "Only true pizza, change my mind.", "/user_images/chmura.jpg", 30, 9.99f, true, LocalDateTime.now(), user3 ,new HashSet<>(List.of(flour, eggs, pineapple, ham)), dinner, medium, new HashSet<>(List.of(casual, birthday)));
 
             Recipe pizzaSalami = new Recipe("Pizza salami", "Classical pizza great for all events.", "/user_images/chmura.jpg", 30, 2.13f, true, LocalDateTime.now(), user3, new HashSet<>(List.of(flour, eggs, salami, tomatoSauce)), dinner, hard, new HashSet<>(List.of(casual, birthday, anniversary)));
 
-            Recipe bar = new Recipe("Bar", "Simple bar for quick snack.", "/user_images/chmura.jpg", 30, 3.17f, false, LocalDateTime.now(), user1 ,new HashSet<>(List.of(flour, eggs, sugar, butter)), snack, easy, new HashSet<>(List.of(casual)));
+            Recipe bar = new Recipe("Bar", "Simple bar for quick snack.", "/user_images/chmura.jpg", 30, 3.17f, false, LocalDateTime.now(), user3 ,new HashSet<>(List.of(flour, eggs, sugar, butter)), snack, easy, new HashSet<>(List.of(casual)));
 
             if (recipeRepository.count() == 0) {
                 recipeRepository.saveAll(List.of(pancakes, strawberryCake, spaghettiCarbonara, sandwich, pomodoroSoup, beefWithPotatoes, hawaiianPizza, pizzaSalami, bar));
@@ -160,14 +160,14 @@ public class RepositoryInitializer {
             }
 
             // Initialize favourites
-            Favourite favourite1 = new Favourite(user2, pancakes);
+            Favourite favourite1 = new Favourite(user1, pancakes);
             Favourite favourite2 = new Favourite(user1, strawberryCake);
-            Favourite favourite3 = new Favourite(user3, pomodoroSoup);
+            Favourite favourite3 = new Favourite(user1, pomodoroSoup);
             Favourite favourite4 = new Favourite(user1, hawaiianPizza);
             Favourite favourite5 = new Favourite(user2, bar);
-            Favourite favourite6 = new Favourite(user3, spaghettiCarbonara);
-            Favourite favourite7 = new Favourite(user1, pizzaSalami);
-            Favourite favourite8 = new Favourite(user2, pomodoroSoup);
+            Favourite favourite6 = new Favourite(user2, spaghettiCarbonara);
+            Favourite favourite7 = new Favourite(user3, pizzaSalami);
+            Favourite favourite8 = new Favourite(user3, pomodoroSoup);
             Favourite favourite9 = new Favourite(user3, hawaiianPizza);
 
             if (favouriteRepository.count() == 0) {
@@ -175,14 +175,14 @@ public class RepositoryInitializer {
             }
 
             // Initialize recipe histories
-            RecipeHistory recipeHistory1 = new RecipeHistory(user2, pancakes);
+            RecipeHistory recipeHistory1 = new RecipeHistory(user1, pancakes);
             RecipeHistory recipeHistory2 = new RecipeHistory(user1, strawberryCake);
-            RecipeHistory recipeHistory3 = new RecipeHistory(user3, pomodoroSoup);
+            RecipeHistory recipeHistory3 = new RecipeHistory(user1, pomodoroSoup);
             RecipeHistory recipeHistory4 = new RecipeHistory(user1, hawaiianPizza);
             RecipeHistory recipeHistory5 = new RecipeHistory(user2, bar);
-            RecipeHistory recipeHistory6 = new RecipeHistory(user3, spaghettiCarbonara);
-            RecipeHistory recipeHistory7 = new RecipeHistory(user1, pizzaSalami);
-            RecipeHistory recipeHistory8 = new RecipeHistory(user2, pomodoroSoup);
+            RecipeHistory recipeHistory6 = new RecipeHistory(user2, spaghettiCarbonara);
+            RecipeHistory recipeHistory7 = new RecipeHistory(user3, pizzaSalami);
+            RecipeHistory recipeHistory8 = new RecipeHistory(user3, pomodoroSoup);
             RecipeHistory recipeHistory9 = new RecipeHistory(user3, hawaiianPizza);
 
             if (recipeHistoryRepository.count() == 0) {

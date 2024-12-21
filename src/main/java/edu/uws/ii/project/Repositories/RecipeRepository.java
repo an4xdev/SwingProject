@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
+import java.util.Set;
 
 public interface RecipeRepository extends PagingAndSortingRepository<Recipe, Long>, JpaRepository<Recipe, Long> {
 
@@ -15,6 +16,7 @@ public interface RecipeRepository extends PagingAndSortingRepository<Recipe, Lon
 
     List<Recipe> findAllByDifficulty(Difficulty diff);
 
-    List<Recipe> findAllByEvents(Event event);
+    List<Recipe> findAllByEvents(Set<Event> event);
 
+    List<Recipe> findAllByUserId(Long userId);
 }

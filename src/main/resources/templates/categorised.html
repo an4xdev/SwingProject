@@ -15,7 +15,7 @@
         </header>
         <div class="featured-recipes">
             <div th:each="recipe : ${recipes}" th:insert="~{fragments/recipe_card :: div(recipe=${recipe})}"
-                 style="max-width: 33%"></div>
+                 class="w33"></div>
         </div>
     </section>
 </main>

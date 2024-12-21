@@ -1,4 +1,4 @@
-<!--TODO: add today value to get year-->
 <footer class="footer">
-    <p>Michał Żuk &copy; <span th:text="${#dates.format(today, 'yyyy')}"></span> Online Recipe Book. All rights reserved.</p>
+    <p>Michał Żuk &copy; 2024 - <span th:text="${#temporals.format(today, 'yyyy')}"></span> Online Recipe Book. All rights reserved.</p>
+
 </footer>

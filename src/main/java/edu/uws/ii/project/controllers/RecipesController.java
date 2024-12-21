@@ -4,8 +4,11 @@ import edu.uws.ii.project.domain.Recipe;
 import edu.uws.ii.project.dtos.AddFormDTO;
 import edu.uws.ii.project.services.comments.ICommentService;
 import edu.uws.ii.project.services.difficulties.IDifficultyService;
+import edu.uws.ii.project.services.favourites.IFavouriteService;
 import edu.uws.ii.project.services.ingredients.IIngredientsService;
+import edu.uws.ii.project.services.recipe_history.IRecipeHistoryService;
 import edu.uws.ii.project.services.recipes.IRecipeService;
+import edu.uws.ii.project.services.steps.IStepService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,14 +31,20 @@ public class RecipesController {
     private final IRecipeService recipeService;
     private final ICommentService commentService;
     private final IIngredientsService ingredientsService;
+    private final IStepService stepService;
     private final IDifficultyService difficultyService;
+    private final IFavouriteService favouriteService;
+    private final IRecipeHistoryService recipeHistoryService;
 
     @Autowired
-    public RecipesController(IRecipeService recipeService, ICommentService commentService, IIngredientsService ingredientsService, IDifficultyService difficultyService) {
+    public RecipesController(IRecipeService recipeService, ICommentService commentService, IIngredientsService ingredientsService, IStepService stepService, IDifficultyService difficultyService, IFavouriteService favouriteService, IRecipeHistoryService recipeHistoryService) {
         this.recipeService = recipeService;
         this.ingredientsService = ingredientsService;
+        this.stepService = stepService;
         this.difficultyService = difficultyService;
         this.commentService = commentService;
+        this.favouriteService = favouriteService;
+        this.recipeHistoryService = recipeHistoryService;
     }
 
     @GetMapping("/page")
@@ -53,11 +62,19 @@ public class RecipesController {
         return "add_recipe";
     }
 
-    @GetMapping("/details/{id}")
+    @GetMapping("/{id}")
     public String details(@PathVariable Long id, Model model) {
         var recipe = recipeService.getRecipeById(id).orElseThrow();
+        var favourites = favouriteService.getFavouriteCountByRecipe(recipe);
+        var done = recipeHistoryService.getDoneCountByRecipe(recipe);
+        var ingredients = ingredientsService.findAllByRecipe(recipe);
+        var steps = stepService.findAllByRecipeId(id);
         var comments = commentService.findAllByRecipeId(id);
         model.addAttribute("recipe", recipe);
+        model.addAttribute("favourites", favourites);
+        model.addAttribute("done", done);
+        model.addAttribute("ingredients", ingredients);
+        model.addAttribute("steps", steps);
         model.addAttribute("comments", comments);
         return "details";
     }
@@ -132,7 +149,7 @@ public class RecipesController {
     @DeleteMapping("/{id}")
     public String deleteRecipe(@PathVariable Long id) {
         recipeService.deleteRecipeById(id);
-        return "redirect:/add_recipe";
+        return "redirect:back";
     }
 
 }

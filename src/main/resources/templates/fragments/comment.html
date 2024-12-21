@@ -3,12 +3,12 @@
         <header>
             <h4>From</h4>
         </header>
-        <p>mz@gmail.com</p>
+        <p th:text="${comment.user.username}"></p>
     </section>
     <section>
         <header>
             <h4>Comment</h4>
         </header>
-        <p>Great recipe! I tried it last night and it was delicious. I will definitely be making it again soon.</p>
+        <p th:text="${comment.content}"></p>
     </section>
 </div>
