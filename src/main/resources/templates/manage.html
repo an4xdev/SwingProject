@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage X - Online Recipe Book</title>
+    <title>Manage [[${type}]] - Online Recipe Book</title>
     <link rel="stylesheet" href="/styles/styles.css">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
 </head>
@@ -11,34 +11,25 @@
 <div th:insert="~{fragments/header :: header}"></div>
 <div th:insert="~{fragments/nav :: div}"></div>
 <header class="body-header">
-    <h2>Manage X</h2>
+    <h2>Manage <span th:text="${type}"></span></h2>
 </header>
 <main class="content">
     <section>
         <header class="text-center">
-            <h2>Add new X</h2>
+            <h2>Add new <span th:text="${typeAdd}"></span></h2>
         </header>
-        <form class="dflex red-border flex-column align-items-center">
+        <form class="dflex red-border flex-column align-items-center" th:action="@{/admin/manage/add/{type}(type=${typeForm})}" th:method="post">
             <div class="p1rem">
                 <label for="name">Name:</label>
                 <input type="text" id="name" name="name" required>
             </div>
             <div class="p1rem">
-                <button type="submit">Add</button>
+                <button type="submit" class="view-recipe-btn">Add</button>
             </div>
         </form>
     </section>
     <section class="dflex flex-wrap">
-        <div th:insert="~{fragments/manage_card :: div}"></div>
-        <div th:insert="~{fragments/manage_card :: div}"></div>
-        <div th:insert="~{fragments/manage_card :: div}"></div>
-        <div th:insert="~{fragments/manage_card :: div}"></div>
-        <div th:insert="~{fragments/manage_card :: div}"></div>
-        <div th:insert="~{fragments/manage_card :: div}"></div>
-        <div th:insert="~{fragments/manage_card :: div}"></div>
-        <div th:insert="~{fragments/manage_card :: div}"></div>
-        <div th:insert="~{fragments/manage_card :: div}"></div>
-        <div th:insert="~{fragments/manage_card :: div}"></div>
+        <div th:each="item : ${items}" th:insert="~{fragments/manage_card :: div(item=${item})}"></div>
     </section>
 </main>
 <div th:insert="~{fragments/footer :: footer}"></div>

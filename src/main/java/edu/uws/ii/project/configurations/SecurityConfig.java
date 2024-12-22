@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -14,32 +13,21 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final CustomUserDetailsService userDetailsService;
+    private final CustomUserDetailsService customUserDetailsService;
 
-    public SecurityConfig(CustomUserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+    public SecurityConfig(CustomUserDetailsService customUserDetailsService) {
+        this.customUserDetailsService = customUserDetailsService;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/styles/**", "/js/**", "/images/**").permitAll()
-                        .requestMatchers("/").permitAll()
-                        .requestMatchers("/403").permitAll()
-                        .requestMatchers("/404").permitAll()
-                        .requestMatchers("/500").permitAll()
-                        .requestMatchers("/error").permitAll()
-                        .requestMatchers("/register").permitAll()
-                        .requestMatchers("/search").permitAll()
-                )
-                .authorizeHttpRequests((requests -> requests
+                        .requestMatchers("/styles/**", "/js/**", "/images/**", "/user_images/**").permitAll()
+                        .requestMatchers("/", "/403", "/404", "/500", "/error", "/register", "/search").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
-                        .anyRequest().authenticated()))
-                .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/recipes/**").authenticated()
-                        .requestMatchers("/user/**").authenticated()
-                        .requestMatchers("/profile/**").authenticated()
+                        .requestMatchers("/recipes/**", "/user/**", "/profile/**").authenticated()
+                        .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
                         .loginPage("/login")
@@ -54,13 +42,8 @@ public class SecurityConfig {
                 .exceptionHandling((exceptions) -> exceptions
                         .accessDeniedPage("/403")
                 )
-                .userDetailsService(userDetailsService);
+                .userDetailsService(customUserDetailsService);
         return http.build();
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return userDetailsService;
     }
 
     @Bean

@@ -19,4 +19,10 @@ public interface RecipeRepository extends PagingAndSortingRepository<Recipe, Lon
     List<Recipe> findAllByEvents(Set<Event> event);
 
     List<Recipe> findAllByUserId(Long userId);
+
+    Long countByDifficulty(Difficulty difficulty);
+
+    Long countByCategory(Category category);
+
+    Long countByEvents(Set<Event> event);
 }

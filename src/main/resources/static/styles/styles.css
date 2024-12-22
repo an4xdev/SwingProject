@@ -61,6 +61,10 @@ span.bold {
     display: flex;
 }
 
+.inline-block {
+    display: inline-block;
+}
+
 .flex1{
     flex: 1;
 }
@@ -320,7 +324,7 @@ section header{
 }
 
 .search-input {
-    width: 100%;
+    width: 90%;
     padding: 10px;
     margin-right: 10px;
 }

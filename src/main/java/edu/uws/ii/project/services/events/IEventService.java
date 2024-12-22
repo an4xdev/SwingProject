@@ -1,20 +1,20 @@
-package edu.uws.ii.project.services.difficulties;
+package edu.uws.ii.project.services.events;
 
-import edu.uws.ii.project.domain.Difficulty;
+import edu.uws.ii.project.domain.Event;
 import edu.uws.ii.project.dtos.ManageDTO;
 
 import java.util.List;
 
-public interface IDifficultyService {
-    List<Difficulty> findAll();
-
+public interface IEventService {
     Long count();
+
+    List<Event> findAll();
 
     List<ManageDTO> findManageDTO();
 
     void deleteById(Long id);
 
-    Difficulty findById(Long id);
+    Event findById(Long id);
 
     void update(Long id, String name);
 

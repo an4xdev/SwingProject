@@ -6,79 +6,113 @@
     <title>Search - Online Recipe Book</title>
     <link rel="stylesheet" href="/styles/styles.css">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <style>
+        select option:checked {
+            background-color: #ff6f61;
+        }
+
+        label {
+            display: inline-block;
+            padding: 8px 16px;
+            border: 1px solid transparent;
+            transition: border 0.3s, background-color 0.3s;
+            cursor: pointer;
+        }
+
+        input[type="checkbox"] + input[type="hidden"] + label {
+            border: 1px solid #f0f0f0;
+        }
+
+        input[type="checkbox"]:checked + input[type="hidden"] + label {
+            border: 1px solid #ff6f61;
+        }
+
+        .error {
+            color: #ff6f61;
+            font-size: 0.8rem;
+        }
+    </style>
 </head>
 <body>
-    <div th:insert="~{fragments/header :: header}"></div>
-    <div th:insert="~{fragments/nav :: div}"></div>
+<div th:insert="~{fragments/header :: header}"></div>
+<div th:insert="~{fragments/nav :: div}"></div>
 
-    <main class="content">
-        <section>
-            <header>
-                <h2>Search for recipes</h2>
-            </header>
-            <form>
-                <div class="search-container">
-                    <div class="search-input-container">
-                        <input type="search" name="search" required class="search-input" placeholder="Name of recipe">
-                    </div>
-                    <div>
-                        <button type="submit" class="search-btn">Search</button>
-                    </div>
-                </div>
-                <div class="dflex">
-                    <div class="search-advanced">
-                        <div class="options-advanced">
-                            <label for="category">Category:</label>
-                            <select id="category" name="category">
-                                <option value="all">All</option>
-                                <option value="breakfast">Breakfast</option>
-                                <option value="lunch">Lunch</option>
-                                <option value="dinner">Dinner</option>
-                                <option value="dessert">Dessert</option>
-                            </select>
-                        </div>
-                        <div class="options-advanced">
-                            <label for="difficulty">Difficulty:</label>
-                            <select id="difficulty" name="difficulty">
-                                <option value="all">All</option>
-                                <option value="easy">Easy</option>
-                                <option value="medium">Medium</option>
-                                <option value="hard">Hard</option>
-                            </select>
-                        </div>
-                        <div class="options-advanced">
-                            <label for="event">Event:</label>
-                            <select id="event" name="event">
-                                <option value="all">All</option>
-                                <option value="christmas">Christmas</option>
-                                <option value="easter">Easter</option>
-                                <option value="thanksgiving">Thanksgiving</option>
-                                <option value="birthday">Birthday</option>
-                            </select>
-                        </div>
-                        <div class="options-advanced">
-                            <label for="sort">Sort by:</label>
-                            <select id="sort" name="sort">
-                                <option value="newest">Newest</option>
-                                <option value="oldest">Oldest</option>
-                                <option value="title">Title</option>
-                                <option value="difficulty">Difficulty</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="featured-recipes">
-                        <div th:insert="~{fragments/recipe_card :: div}"></div>
-                        <div th:insert="~{fragments/recipe_card :: div}"></div>
-                        <div th:insert="~{fragments/recipe_card :: div}"></div>
-                        <div th:insert="~{fragments/recipe_card :: div}"></div>
-                        <div th:insert="~{fragments/recipe_card :: div}"></div>
-                        <div th:insert="~{fragments/recipe_card :: div}"></div>
-                        <div th:insert="~{fragments/recipe_card :: div}"></div>
+<main class="content">
+    <section>
+        <header>
+            <h2>Search for recipes</h2>
+        </header>
+        <form th:object="${searchForm}">
+            <div class="search-container">
+                <div class="search-input-container">
+                    <label for="search-input">
+                        Search:
+                    </label>
+                    <input type="search" name="search" required class="search-input" placeholder="Name of recipe" th:value="*{phrase}" id="search-input">
+                    <div th:if="${#fields.hasErrors('phrase')}" class="error">
+                        <span th:errors="*{phrase}"></span>
                     </div>
                 </div>
-            </form>
-        </section>
-    </main>
-    <div th:insert="~{fragments/footer :: footer}"></div>
+                <div>
+                    <button type="submit" class="search-btn">Search</button>
+                </div>
+            </div>
+            <div th:if="${#fields.hasErrors('phrase')}" class="error">
+                <span th:errors="*{phrase}"></span>
+            </div>
+            <div class="dflex">
+                <div class="search-advanced">
+                    <div class="options-advanced">
+                        <label for="category">Category:</label>
+                        <select id="category" name="category" required th:value="*{categoryId}">
+                            <option value="-1" selected>---</option>
+                            <option value="0">All</option>
+                            <option th:each="category: ${categories}" th:text="${category.name}"
+                                    th:value="${category.id}"></option>
+                        </select>
+                        <div th:if="${#fields.hasErrors('categoryId')}" class="error">
+                            <span th:errors="*{categoryId}"></span>
+                        </div>
+                    </div>
+                    <div class="options-advanced">
+                        <label for="difficulty">Difficulty:</label>
+                        <select id="difficulty" name="difficulty" required th:value="*{difficultyId}">
+                            <option value="-1" selected>---</option>
+                            <option value="0">All</option>
+                            <option th:each="difficulty : ${difficulties}" th:text="${difficulty.name}"></option>
+                        </select>
+                        <div th:if="${#fields.hasErrors('difficultyId')}" class="error">
+                            <span th:errors="*{difficultyId}"></span>
+                        </div>
+                    </div>
+                    <div class="options-advanced">
+                        <div th:each="event : ${events}">
+                            <input type="checkbox" th:field="*{eventIds}" th:value="${event.id}"
+                                   th:id="'event-' + ${event.id}">
+                            <label th:for="'event-' + ${event.id}" th:text="${event.name}"></label>
+                        </div>
+                    </div>
+                    <div class="options-advanced">
+                        <label for="sort">Sort by:</label>
+                        <select id="sort" name="sort" required th:value="*{sortType}">
+                            <option value="-1" selected>---</option>
+                            <option value="1">Newest</option>
+                            <option value="2">Oldest</option>
+                            <option value="3">Title</option>
+                            <option value="4">Difficulty</option>
+                        </select>
+                        <div th:if="${#fields.hasErrors('sortType')}" class="error">
+                            <span th:errors="*{sortType}"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="featured-recipes">
+
+                </div>
+            </div>
+        </form>
+    </section>
+</main>
+<div th:insert="~{fragments/footer :: footer}"></div>
 </body>
 </html>

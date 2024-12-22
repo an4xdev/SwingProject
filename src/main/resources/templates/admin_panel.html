@@ -17,18 +17,18 @@
     <div class="dflex">
         <div class="admin-manage-card flex1">
             <h4>Manage categories</h4>
-            <p>Count: 0</p>
-            <button class="view-recipe-btn">Manage</button>
+            <p>Count: <span th:text="${categories}"></span></p>
+            <a class="view-recipe-btn" th:href="@{/admin/manage/category}">Manage</a>
         </div>
         <div class="admin-manage-card flex1">
             <h4>Manage difficulties</h4>
-            <p>Count: 0</p>
-            <button class="view-recipe-btn">Manage</button>
+            <p>Count: <span th:text="${difficulties}"></span></p>
+            <a class="view-recipe-btn" th:href="@{/admin/manage/difficulty}">Manage</a>
         </div>
         <div class="admin-manage-card flex1">
             <h4>Manage events</h4>
-            <p>Count: 0</p>
-            <button class="view-recipe-btn">Manage</button>
+            <p>Count: <span th:text="${events}"></span></p>
+            <a class="view-recipe-btn" th:href="@{/admin/manage/event}">Manage</a>
         </div>
     </div>
 </main>

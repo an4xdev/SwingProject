@@ -48,9 +48,9 @@ public class RepositoryInitializer {
     InitializingBean init() {
         return () -> {
             // Initialize difficulties
-            Difficulty easy = new Difficulty("Easy", 1);
-            Difficulty medium = new Difficulty("Medium", 2);
-            Difficulty hard = new Difficulty("Hard", 3);
+            Difficulty easy = new Difficulty("Easy");
+            Difficulty medium = new Difficulty("Medium");
+            Difficulty hard = new Difficulty("Hard");
             if (difficultyRepository.count() == 0) {
                 difficultyRepository.saveAll(List.of(easy, medium, hard));
             }
@@ -122,6 +122,9 @@ public class RepositoryInitializer {
             }
 
             // Initialize recipes
+
+            // photo `chmura.jpg` got from: https://picsum.photos/ (MIT License)
+
             Recipe pancakes = new Recipe("Pancakes", "Pancakes are a breakfast staple and are loved by many. They are easy to make and can be customized to your liking.", "/user_images/chmura.jpg", 20, 8.75f, false, LocalDateTime.now(), user1, new HashSet<>(List.of(sugar, milk, flour, eggs)), breakfast, easy, new HashSet<>(List.of(casual)));
 
             Recipe strawberryCake = new Recipe("Strawberry Cake", "Strawberry Cake is great cake for special events", "/user_images/chmura.jpg", 30, 6.87f, true, LocalDateTime.now(), user1 ,new HashSet<>(List.of(sugar, milk, flour,eggs, strawberries)), dessert, medium, new HashSet<>(List.of(birthday, anniversary, christmas)));

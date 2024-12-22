@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="/styles/styles.css">
 </head>
 <body>
+<!--    TODO: add date of creation and rating-->
+<!--    TODO: make rating as table and let users decide-->
+<!--    TODO: calculate rating by table-->
     <div th:insert="~{fragments/header :: header}"></div>
     <div th:insert="~{fragments/nav :: div}"></div>
     <header class="body-header"><h2 th:text="${recipe.name}"></h2></header>
@@ -23,7 +26,7 @@
                     </ul>
             </div>
             <div class="p05rem text-end">
-                <img th:src="${recipe.photoPath}" alt="Spaghetti Bolognese" width="250">
+                <img th:src="${recipe.photoPath}" alt="dish photo" width="250">
             </div>
         </div>
     </section>
@@ -60,7 +63,9 @@
         </aside>
     </div>
     <section>
-        <header><h3>Comments</h3></header>
+        <header>
+            <h3>Comments</h3>
+        </header>
         <div>
             <form class="p1rem">
                 <label for="comment">Leave a comment:</label><br>

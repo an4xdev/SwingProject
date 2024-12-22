@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit [[${type}]] - Online Recipe Book</title>
+    <link rel="stylesheet" href="/styles/styles.css">
+</head>
+<body>
+<div th:insert="~{fragments/header :: header}"></div>
+<div th:insert="~{fragments/nav :: div}"></div>
+<main class="content">
+    <section>
+        <header class="text-center">
+            <h2>Edit <span th:text="${type}"></span></h2>
+        </header>
+        <form class="dflex red-border flex-column align-items-center" th:action="@{/admin/manage/edit/{typeForm}/{id}(id = ${id}, typeForm=${typeForm})}"  th:object="${item}" th:method="put">
+            <input type="hidden" th:field="*{id}">
+            <div class="p1rem">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required th:value="*{name}">
+            </div>
+            <div class="p1rem">
+                <button type="submit" class="view-recipe-btn">Edit</button>
+            </div>
+        </form>
+    </section>
+</main>
+<div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+</html>

@@ -1,6 +1,9 @@
 <div class="recipe-card">
-    <h3>Dinner meal</h3>
-    <p>Recipes: 0</p>
-    <button class="view-recipe-btn">Edit</button>
-    <button class="view-recipe-btn">Delete</button>
+    <h3 th:text="${item.name}"></h3>
+    <p>Recipes: <span th:text="${item.recipesCount}"></span></p>
+    <a class="view-recipe-btn" th:href="@{/admin/manage/edit/{type}/{id}(id=${item.id}, type=${item.type})}">Edit</a>
+    <form th:action="@{/admin/manage/delete/{type}/{id}(id=${item.id}, type=${item.type})}" th:method="delete"
+        class="inline-block">
+        <button class="view-recipe-btn" type="submit">Delete</button>
+    </form>
 </div>

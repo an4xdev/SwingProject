@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,13 +17,8 @@ public class Difficulty {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private Integer level;
 
-    @OneToMany(mappedBy = "difficulty")
-    private List<Recipe> recipeDiff = new ArrayList<>();
-
-    public Difficulty(String name, Integer level) {
+    public Difficulty(String name) {
         this.name = name;
-        this.level = level;
     }
 }
