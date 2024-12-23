@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Recipe - Online Recipe Book</title>
+    <link rel="stylesheet" href="/styles/styles.css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+</head>
+<body>
+<div th:insert="~{fragments/header :: header}"></div>
+<div th:insert="~{fragments/nav :: div}"></div>
+<header class="body-header">
+    <h2>Recipe form</h2>
+</header>
+<div class="add-recipe-container">
+    <h2>Add New Recipe</h2>
+    <form th:action="@{/recipes}" th:object="${recipeForm}" method="post" enctype="multipart/form-data">
+
+        <div class="add-recipe-form-panel">
+            <label for="title">Recipe Title</label>
+            <input type="text" id="title" name="title" required th:field="*{name}">
+            <div th:if="${#fields.hasErrors('name')}" class="error-in-form">
+                <span th:errors="*{name}"></span>
+            </div>
+        </div>
+
+        <div class="add-recipe-form-panel">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" required th:field="*{description}"></textarea>
+            <div th:if="${#fields.hasErrors('description')}" class="error-in-form">
+                <span th:errors="*{description}"></span>
+            </div>
+        </div>
+
+        <div class="add-recipe-form-panel">
+            <h3>Upload Images</h3>
+            <div id="image-upload-section">
+                <label for="image">Image:</label>
+                <input type="file" name="images" id="image" required accept="image/*" th:field="*{image}">
+            </div>
+            <div th:if="${#fields.hasErrors('image')}" class="error-in-form">
+                <span th:errors="*{image}"></span>
+            </div>
+        </div>
+
+        <div class="add-recipe-form-panel">
+            <label for="difficulty">Difficulty</label>
+            <select id="difficulty" name="difficulty" required th:field="*{difficultyId}">
+                <option value="-1">-- Choose difficulty --</option>
+                <option th:each="difficulty : ${difficulties}" th:value="${difficulty.id}" th:text="${difficulty.name}"></option>
+            </select>
+            <div th:if="${#fields.hasErrors('difficultyId')}" class="error-in-form">
+                <span th:errors="*{difficultyId}"></span>
+            </div>
+        </div>
+
+        <div class="add-recipe-form-panel">
+            <label for="category">Category</label>
+            <select id="category" name="category" required th:field="*{categoryId}">
+                <option value="-1">-- Choose category --</option>
+                <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+            </select>
+            <div th:if="${#fields.hasErrors('categoryId')}" class="error-in-form">
+                <span th:errors="*{categoryId}"></span>
+            </div>
+        </div>
+
+        <div class="add-recipe-form-panel">
+            <div th:each="event : ${events}">
+                <input type="checkbox" th:field="*{eventIds}" th:value="${event.id}"
+                       th:id="'event-' + ${event.id}">
+                <label th:for="'event-' + ${event.id}" th:text="${event.name}"></label>
+            </div>
+            <div th:if="${#fields.hasErrors('eventIds')}" class="error-in-form">
+                <span th:errors="*{eventIds}"></span>
+            </div>
+        </div>
+
+        <div class="add-recipe-form-panel">
+            <label for="time">Time</label>
+            <input type="number" id="time" name="time" required th:field="*{time}">
+            <div th:if="${#fields.hasErrors('time')}" class="error-in-form">
+                <span th:errors="*{time}"></span>
+            </div>
+        </div>
+
+        <div class="add-recipe-form-panel">
+            <label for="ingredient-select">Select Existing Ingredients</label>
+            <select id="ingredient-select">
+                <option value="-1">-- Choose ingredients --</option>
+                <option th:each="ingredient : ${ingredients}" th:value="${ingredient.id}"
+                        th:text="${ingredient.name}"></option>
+            </select>
+        </div>
+
+        <div class="add-recipe-form-panel">
+            <div id="selected-ingredients">
+                <h3>Selected Ingredients:</h3>
+                <div id="ingredient-list"></div>
+            </div>
+            <div th:if="${#fields.hasErrors('ingredients')}" class="error-in-form">
+                <span th:errors="*{ingredients}"></span>
+            </div>
+        </div>
+
+        <div class="add-recipe-form-panel">
+            <h3>New Ingredients</h3>
+            <div id="new-ingredients"></div>
+            <button type="button" id="add-ingredient">Add New Ingredient</button>
+            <div th:if="${#fields.hasErrors('ingredientsAdded')}" class="error-in-form">
+                <span th:errors="*{ingredientsAdded}"></span>
+            </div>
+        </div>
+
+        <div class="add-recipe-form-panel">
+            <h3>Steps</h3>
+            <ol id="new-steps"></ol>
+            <button type="button" id="add-step">Add New Step</button>
+            <div th:if="${#fields.hasErrors('steps')}" class="error-in-form">
+                <span th:errors="*{steps}"></span>
+            </div>
+        </div>
+
+        <button type="submit" class="submit-recipe-btn">Add Recipe</button>
+    </form>
+</div>
+<div th:insert="~{fragments/footer :: footer}"></div>
+<script>
+    $(document).ready(function () {
+        let ingredientIndex = 0;
+        let ingredientAddedIndex = 0;
+        let stepIndex = 0;
+
+        $('#add-ingredient').on('click', function () {
+            $('#new-ingredients').append(`
+            <div>
+                <input type="text" name="ingredientsAdded[${ingredientAddedIndex}].name" placeholder="New Ingredient" />
+                <button type="button" class="remove-ingredient">Remove</button>
+            </div>
+        `);
+            ingredientAddedIndex++;
+        });
+
+        $('#new-ingredients').on('click', '.remove-ingredient', function () {
+            $(this).parent().remove();
+        });
+
+        $('#ingredient-select').on('change', function () {
+            const selectedIngredient = $(this).val();
+            if (selectedIngredient === '-1') {
+                return;
+            }
+            const selectedIngredientName = $(`#ingredient-select option[value="${selectedIngredient}"]`).text();
+
+            if (selectedIngredient) {
+                if ($(`#ingredient-list div[data-name="${selectedIngredient}"]`).length === 0) {
+                    $('#ingredient-list').append(`
+                    <div data-name="ingredients">
+                        <span>${selectedIngredientName}</span>
+                        <button type="button" class="remove-selected-ingredient">Remove</button>
+                        <input type="hidden" name="ingredients[${ingredientIndex}].name" value="${selectedIngredientName}" >
+                        <input type="hidden" name="ingredients[${ingredientIndex}].id" value="${selectedIngredient}" >
+                    </div>
+                `);
+                    ingredientIndex++;
+                }
+                $(this).val('');
+            }
+        });
+
+        $('#ingredient-list').on('click', '.remove-selected-ingredient', function () {
+            $(this).parent().remove();
+        });
+
+        $('#add-step').on('click', function () {
+            $('#new-steps').append(`
+            <li>
+                <input type="text" name="steps[${stepIndex}].description" placeholder="New Step Description"/>
+                <button type="button" class="remove-step">Remove</button>
+            </li>
+        `);
+            stepIndex++;
+        });
+
+        $('#new-steps').on('click', '.remove-step', function () {
+            $(this).parent().remove();
+        });
+    });
+</script>
+</body>
+</html>

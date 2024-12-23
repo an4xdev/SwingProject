@@ -1,19 +1,23 @@
 package edu.uws.ii.project.controllers;
 
-import edu.uws.ii.project.domain.Recipe;
+import edu.uws.ii.project.domain.*;
 import edu.uws.ii.project.dtos.AddFormDTO;
+import edu.uws.ii.project.services.categories.ICategoryService;
 import edu.uws.ii.project.services.comments.ICommentService;
 import edu.uws.ii.project.services.difficulties.IDifficultyService;
+import edu.uws.ii.project.services.events.IEventService;
 import edu.uws.ii.project.services.favourites.IFavouriteService;
 import edu.uws.ii.project.services.ingredients.IIngredientsService;
 import edu.uws.ii.project.services.recipe_history.IRecipeHistoryService;
 import edu.uws.ii.project.services.recipes.IRecipeService;
 import edu.uws.ii.project.services.steps.IStepService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,6 +25,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 @Controller
 @RequestMapping("/recipes")
@@ -35,9 +40,11 @@ public class RecipesController {
     private final IDifficultyService difficultyService;
     private final IFavouriteService favouriteService;
     private final IRecipeHistoryService recipeHistoryService;
+    private final IEventService eventService;
+    private final ICategoryService categoryService;
 
     @Autowired
-    public RecipesController(IRecipeService recipeService, ICommentService commentService, IIngredientsService ingredientsService, IStepService stepService, IDifficultyService difficultyService, IFavouriteService favouriteService, IRecipeHistoryService recipeHistoryService) {
+    public RecipesController(IRecipeService recipeService, ICommentService commentService, IIngredientsService ingredientsService, IStepService stepService, IDifficultyService difficultyService, IFavouriteService favouriteService, IRecipeHistoryService recipeHistoryService, IEventService eventService, ICategoryService categoryService) {
         this.recipeService = recipeService;
         this.ingredientsService = ingredientsService;
         this.stepService = stepService;
@@ -45,6 +52,8 @@ public class RecipesController {
         this.commentService = commentService;
         this.favouriteService = favouriteService;
         this.recipeHistoryService = recipeHistoryService;
+        this.eventService = eventService;
+        this.categoryService = categoryService;
     }
 
     @GetMapping("/page")
@@ -53,13 +62,6 @@ public class RecipesController {
         Page<Recipe> recipes = recipeService.getPage(PageRequest.of(page, size));
         model.addAttribute("recipes", recipes);
         return "index";
-    }
-
-    @GetMapping
-    public String addRecipe(Model model) {
-        AddFormDTO recipeForm = new AddFormDTO(null, "", ingredientsService.findAll(), difficultyService.findAll());
-        model.addAttribute("recipeForm", recipeForm);
-        return "add_recipe";
     }
 
     @GetMapping("/{id}")
@@ -79,27 +81,74 @@ public class RecipesController {
         return "details";
     }
 
-    @PostMapping
-    public String addRecipe(@ModelAttribute("recipeForm") AddFormDTO recipeForm) {
-        MultipartFile file = recipeForm.getImage();
-
-        if (file != null && !file.isEmpty()) {
-            try {
-                Files.createDirectories(Paths.get(UPLOAD_DIR));
-
-                Path filePath = Paths.get(UPLOAD_DIR + file.getOriginalFilename());
-                Files.write(filePath, file.getBytes());
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                return "redirect:/add_recipe";
-            }
-        }
-
-        return "redirect:/add_recipe";
+    @ModelAttribute("difficulties")
+    public List<Difficulty> difficulties() {
+        return difficultyService.findAll();
     }
 
-    @PutMapping
+    @ModelAttribute("categories")
+    public List<Category> categories() {
+        return categoryService.findAll();
+    }
+
+    @ModelAttribute("ingredients")
+    public List<Ingredient> ingredients() {
+        return ingredientsService.findAll();
+    }
+
+    @ModelAttribute("events")
+    public List<Event> events() {
+        return eventService.findAll();
+    }
+
+    @ModelAttribute("eventsIds")
+    public List<Long> eventsIds() {
+        return eventService.findAll().stream().map(Event::getId).toList();
+    }
+
+    // TODO: add optional parameter for editing recipe?
+    @GetMapping("/form")
+    public String addRecipeShowForm(Model model) {
+        AddFormDTO recipeForm = new AddFormDTO(-1L, "");
+        model.addAttribute("recipeForm", recipeForm);
+        return "recipe_form";
+    }
+
+    @PostMapping("/form")
+    public String addRecipe(@Valid @ModelAttribute("recipeForm") AddFormDTO recipeForm, BindingResult bindingResult) {
+
+        if (recipeForm.getIngredients() == null || recipeForm.getIngredients().isEmpty()) {
+            bindingResult.rejectValue("ingredients", "error.recipeForm", "At least one ingredient is required");
+        }
+
+        if (recipeForm.getIngredientsAdded() == null || recipeForm.getIngredientsAdded().isEmpty()) {
+            bindingResult.rejectValue("ingredientsAdded", "error.recipeForm", "At least one added ingredient is required");
+        }
+
+        if (bindingResult.hasErrors()) {
+            return "recipe_form";
+        }
+
+
+//        MultipartFile file = recipeForm.getImage();
+//
+//        if (file != null && !file.isEmpty()) {
+//            try {
+//                Files.createDirectories(Paths.get(UPLOAD_DIR));
+//
+//                Path filePath = Paths.get(UPLOAD_DIR + file.getOriginalFilename());
+//                Files.write(filePath, file.getBytes());
+//
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                return "redirect:/add_recipe";
+//            }
+//        }
+
+        return "redirect:/recipes/form";
+    }
+
+    @PutMapping("/form")
     public String updateRecipe(@ModelAttribute("recipeForm") AddFormDTO recipeForm) {
         MultipartFile file = recipeForm.getImage();
 
@@ -112,11 +161,11 @@ public class RecipesController {
 
             } catch (IOException e) {
                 e.printStackTrace();
-                return "redirect:/add_recipe";
+                return "redirect:/recipes/form";
             }
         }
 
-        return "redirect:/add_recipe";
+        return "redirect:/recipes/form";
     }
 
     @GetMapping("/category/{category}")
