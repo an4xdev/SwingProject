@@ -342,7 +342,7 @@ section header{
 .search-advanced {
     display: flex;
     flex-direction: column;
-    width: 50%;
+    width: 35%;
     margin-top: 20px;
     padding-top: 20px;
 
@@ -354,12 +354,18 @@ section header{
 
 .options-advanced {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: space-between;
 
 }
 
-.options-advanced select {
+.options-container {
+    display: flex;
+    width: 100%;
+}
+
+.options-container select {
     width: 80%;
 }
 
@@ -456,4 +462,10 @@ section header{
 
 .error-container h2{
     color: #ff6f61;
+}
+
+.error-in-form {
+    color: #ff6f61;
+    font-size: 1.25rem;
+    font-weight: bolder;
 }

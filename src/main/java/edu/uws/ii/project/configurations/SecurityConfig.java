@@ -24,7 +24,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/styles/**", "/js/**", "/images/**", "/user_images/**").permitAll()
-                        .requestMatchers("/", "/403", "/404", "/500", "/error", "/register", "/search").permitAll()
+                        .requestMatchers("/", "/403", "/404", "/500", "/error", "/register", "/search/**").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .requestMatchers("/recipes/**", "/user/**", "/profile/**").authenticated()
                         .anyRequest().authenticated()

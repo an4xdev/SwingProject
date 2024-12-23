@@ -5,15 +5,19 @@ import edu.uws.ii.project.Repositories.DifficultyRepository;
 import edu.uws.ii.project.Repositories.EventRepository;
 import edu.uws.ii.project.Repositories.RecipeRepository;
 import edu.uws.ii.project.domain.Recipe;
+import edu.uws.ii.project.dtos.SearchFormDTO;
+import edu.uws.ii.project.specifications.RecipeSearchSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class RecipeService implements IRecipeService {
@@ -62,6 +66,49 @@ public class RecipeService implements IRecipeService {
     public List<Recipe> findByEvent(String event) {
         var ev = eventRepository.findByName(event);
         return recipeRepository.findAllByEvents(new HashSet<>(List.of(ev)));
+    }
+
+    @Override
+    public List<Recipe> findBySpecification(SearchFormDTO searchFormDTO) {
+
+        Specification<Recipe> spec = Specification
+                .where(RecipeSearchSpecification
+                        .findByPhrase(
+                                searchFormDTO.getPhrase()
+                        )
+                ).and(RecipeSearchSpecification
+                        .findByEventsIds(
+                                searchFormDTO.getEventIds()
+                        )
+                );
+
+        if (searchFormDTO.getDifficultyId() != 0) {
+            spec = spec.and(RecipeSearchSpecification
+                    .findByDifficultyId(
+                            searchFormDTO.getDifficultyId()
+                    )
+            );
+        }
+
+        if (searchFormDTO.getCategoryId() != 0) {
+            spec = spec.and(RecipeSearchSpecification
+                    .findByCategoryId(
+                            searchFormDTO.getCategoryId()
+                    )
+            );
+        }
+
+        Sort sort = Sort.unsorted();
+        if (searchFormDTO.getSortType() != null) {
+            sort = switch (searchFormDTO.getSortType().intValue()) {
+                case 1 -> Sort.by(Sort.Direction.DESC, "createdAt");
+                case 2 -> Sort.by(Sort.Direction.ASC, "createdAt");
+                case 3 -> Sort.by(Sort.Direction.ASC, "name");
+                case 4 -> Sort.by(Sort.Direction.ASC, "difficulty.id");
+                default -> sort;
+            };
+        }
+        return recipeRepository.findAll(spec, sort).stream().distinct().collect(Collectors.toList());
     }
 }
 

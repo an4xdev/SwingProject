@@ -26,11 +26,6 @@
         input[type="checkbox"]:checked + input[type="hidden"] + label {
             border: 1px solid #ff6f61;
         }
-
-        .error {
-            color: #ff6f61;
-            font-size: 0.8rem;
-        }
     </style>
 </head>
 <body>
@@ -42,14 +37,14 @@
         <header>
             <h2>Search for recipes</h2>
         </header>
-        <form th:object="${searchForm}">
+        <form th:object="${searchForm}" th:action="@{/search/results}" method="post">
             <div class="search-container">
                 <div class="search-input-container">
                     <label for="search-input">
                         Search:
                     </label>
-                    <input type="search" name="search" required class="search-input" placeholder="Name of recipe" th:value="*{phrase}" id="search-input">
-                    <div th:if="${#fields.hasErrors('phrase')}" class="error">
+                    <input type="search" name="search" required class="search-input" placeholder="Name of recipe" th:field="*{phrase}" id="search-input">
+                    <div th:if="${#fields.hasErrors('phrase')}" class="error-in-form">
                         <span th:errors="*{phrase}"></span>
                     </div>
                 </div>
@@ -57,31 +52,35 @@
                     <button type="submit" class="search-btn">Search</button>
                 </div>
             </div>
-            <div th:if="${#fields.hasErrors('phrase')}" class="error">
+            <div th:if="${#fields.hasErrors('phrase')}" class="error-in-form">
                 <span th:errors="*{phrase}"></span>
             </div>
             <div class="dflex">
                 <div class="search-advanced">
                     <div class="options-advanced">
-                        <label for="category">Category:</label>
-                        <select id="category" name="category" required th:value="*{categoryId}">
-                            <option value="-1" selected>---</option>
-                            <option value="0">All</option>
-                            <option th:each="category: ${categories}" th:text="${category.name}"
-                                    th:value="${category.id}"></option>
-                        </select>
-                        <div th:if="${#fields.hasErrors('categoryId')}" class="error">
+                        <div class="options-container">
+                            <label for="category">Category:</label>
+                            <select id="category" name="category" required th:field="*{categoryId}">
+                                <option value="-1" selected>---</option>
+                                <option value="0">All</option>
+                                <option th:each="category: ${categories}" th:text="${category.name}"
+                                        th:value="${category.id}"></option>
+                            </select>
+                        </div>
+                        <div th:if="${#fields.hasErrors('categoryId')}" class="error-in-form">
                             <span th:errors="*{categoryId}"></span>
                         </div>
                     </div>
                     <div class="options-advanced">
-                        <label for="difficulty">Difficulty:</label>
-                        <select id="difficulty" name="difficulty" required th:value="*{difficultyId}">
-                            <option value="-1" selected>---</option>
-                            <option value="0">All</option>
-                            <option th:each="difficulty : ${difficulties}" th:text="${difficulty.name}"></option>
-                        </select>
-                        <div th:if="${#fields.hasErrors('difficultyId')}" class="error">
+                        <div class="options-container">
+                            <label for="difficulty">Difficulty:</label>
+                            <select id="difficulty" name="difficulty" required th:field="*{difficultyId}" >
+                                <option value="-1" selected>---</option>
+                                <option value="0">All</option>
+                                <option th:each="difficulty : ${difficulties}" th:text="${difficulty.name}" th:value="${difficulty.id}"></option>
+                            </select>
+                        </div>
+                        <div th:if="${#fields.hasErrors('difficultyId')}" class="error-in-form">
                             <span th:errors="*{difficultyId}"></span>
                         </div>
                     </div>
@@ -93,21 +92,32 @@
                         </div>
                     </div>
                     <div class="options-advanced">
-                        <label for="sort">Sort by:</label>
-                        <select id="sort" name="sort" required th:value="*{sortType}">
-                            <option value="-1" selected>---</option>
-                            <option value="1">Newest</option>
-                            <option value="2">Oldest</option>
-                            <option value="3">Title</option>
-                            <option value="4">Difficulty</option>
-                        </select>
-                        <div th:if="${#fields.hasErrors('sortType')}" class="error">
+                        <div class="options-container">
+                            <label for="sort">Sort by:</label>
+                            <select id="sort" name="sort" required th:field="*{sortType}">
+                                <option value="1">Newest</option>
+                                <option value="2">Oldest</option>
+                                <option value="3">Name</option>
+                                <option value="4">Difficulty</option>
+                            </select>
+                        </div>
+                        <div th:if="${#fields.hasErrors('sortType')}" class="error-in-form">
                             <span th:errors="*{sortType}"></span>
                         </div>
                     </div>
                 </div>
-                <div class="featured-recipes">
+                <div style="width: 70%">
+                    <div th:if="${showResults}">
+                        <div th:if="${#lists.isEmpty(recipes)}">
+                            <p>Recipes not found</p>
+                        </div>
 
+                        <div th:unless="${#lists.isEmpty(recipes)}" class="featured-recipes">
+                            <div th:each="recipe : ${recipes}" th:insert="~{fragments/recipe_card :: div(recipe=${recipe})}"
+                                 class="w33">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </form>
