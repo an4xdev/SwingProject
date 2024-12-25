@@ -2,6 +2,7 @@ package edu.uws.ii.project.controllers;
 
 import edu.uws.ii.project.domain.*;
 import edu.uws.ii.project.dtos.AddFormDTO;
+import edu.uws.ii.project.dtos.RateRecipeDTO;
 import edu.uws.ii.project.services.categories.ICategoryService;
 import edu.uws.ii.project.services.comments.ICommentService;
 import edu.uws.ii.project.services.difficulties.IDifficultyService;
@@ -79,13 +80,20 @@ public class RecipesController {
 
     @GetMapping("/{id}")
     public String details(@PathVariable Long id, Model model) {
-        var recipe = recipeService.getRecipeById(id).orElseThrow();
+        var recipe = recipeService.findById(id).orElseThrow();
         var favourites = favouriteService.getFavouriteCountByRecipe(recipe);
         var done = recipeHistoryService.getDoneCountByRecipe(recipe);
         var ingredients = ingredientsService.findAllByRecipe(recipe);
         var steps = stepService.findAllByRecipeId(id);
         var comments = commentService.findAllByRecipeId(id);
         var rating = ratingService.calculateRatingByRecipe(recipe);
+
+        var alreadyFavourite = favouriteService.isFavourite(recipe);
+        var alreadyDone = recipeHistoryService.isDone(recipe);
+
+        var userRating = ratingService.getRatingByRecipe(recipe);
+        var rateRecipe = new RateRecipeDTO(id, userRating);
+
         model.addAttribute("recipe", recipe);
         model.addAttribute("favourites", favourites);
         model.addAttribute("done", done);
@@ -93,6 +101,11 @@ public class RecipesController {
         model.addAttribute("steps", steps);
         model.addAttribute("comments", comments);
         model.addAttribute("rating", rating);
+
+        model.addAttribute("alreadyFavourite", alreadyFavourite);
+        model.addAttribute("alreadyDone", alreadyDone);
+
+        model.addAttribute("rateRecipe", rateRecipe);
         return "details";
     }
 
@@ -268,7 +281,7 @@ public class RecipesController {
 
     @DeleteMapping("/{id}")
     public String deleteRecipe(@PathVariable Long id) {
-        recipeService.deleteRecipeById(id);
+        recipeService.deleteById(id);
         return "redirect:back";
     }
 

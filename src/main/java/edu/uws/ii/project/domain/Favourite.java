@@ -22,10 +22,10 @@ public class Favourite {
 
     @ManyToOne
     @JoinColumn(name = "recipe_id")
-    private Recipe recipeFav;
+    private Recipe recipe;
 
-    public Favourite(User user, Recipe recipeFav) {
+    public Favourite(User user, Recipe recipe) {
         this.user = user;
-        this.recipeFav = recipeFav;
+        this.recipe = recipe;
     }
 }

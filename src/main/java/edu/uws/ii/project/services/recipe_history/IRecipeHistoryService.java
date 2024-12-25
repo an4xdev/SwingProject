@@ -4,4 +4,10 @@ import edu.uws.ii.project.domain.Recipe;
 
 public interface IRecipeHistoryService {
     Long getDoneCountByRecipe(Recipe recipe);
+
+    boolean isDone(Recipe recipe);
+
+    void add(Long recipeId);
+
+    void delete(Long recipeId);
 }

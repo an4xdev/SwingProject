@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IRecipeService {
-    Optional<Recipe> getRecipeById(Long id);
+    Optional<Recipe> findById(Long id);
 
     Page<Recipe> getPage(Pageable pageable);
 
-    void deleteRecipeById(Long id);
+    void deleteById(Long id);
 
     List<Recipe> findByCategory(String category);
 

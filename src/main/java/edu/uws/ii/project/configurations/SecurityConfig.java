@@ -26,12 +26,11 @@ public class SecurityConfig {
                         .requestMatchers("/styles/**", "/js/**", "/images/**", "/user_images/**").permitAll()
                         .requestMatchers("/", "/403", "/404", "/500", "/error", "/register", "/search/**").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
-                        .requestMatchers("/recipes/**", "/user/**", "/profile/**").authenticated()
+                        .requestMatchers("/recipes/**", "/user/**", "/profile/**", "/favourite/**", "/history/**", "/ratings/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/", true)
                         .permitAll()
                 )
                 .logout((logout) -> logout

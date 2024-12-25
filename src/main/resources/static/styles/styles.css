@@ -297,8 +297,7 @@ section header{
     color: #333;
 }
 
-.favourite-btn, .done-btn {
-    background-color: #28a745;
+.favourite-btn-add, .done-btn-add, .favourite-btn-remove, .done-btn-remove {
     color: white;
     padding: 10px;
     margin: 10px 5px;
@@ -307,9 +306,18 @@ section header{
     cursor: pointer;
 }
 
-.done-btn {
+.favourite-btn-add{
+    background-color: #28a745;
+}
+
+.done-btn-add {
     background-color: #007bff;
 }
+
+.favourite-btn-remove, .done-btn-remove {
+    background-color: #ff6f61;
+}
+
 
 /*SEARCH*/
 

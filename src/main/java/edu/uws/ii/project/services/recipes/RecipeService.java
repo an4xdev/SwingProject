@@ -34,7 +34,7 @@ public class RecipeService implements IRecipeService {
     }
 
     @Override
-    public Optional<Recipe> getRecipeById(Long id) {
+    public Optional<Recipe> findById(Long id) {
         return recipeRepository.findById(id);
     }
 
@@ -46,7 +46,7 @@ public class RecipeService implements IRecipeService {
     }
 
     @Override
-    public void deleteRecipeById(Long id) {
+    public void deleteById(Long id) {
         recipeRepository.deleteById(id);
     }
 

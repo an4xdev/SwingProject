@@ -7,9 +7,6 @@
     <link rel="stylesheet" href="/styles/styles.css">
 </head>
 <body>
-<!--    TODO: add date of creation and rating-->
-<!--    TODO: make rating as table and let users decide-->
-<!--    TODO: calculate rating by table-->
     <div th:insert="~{fragments/header :: header}"></div>
     <div th:insert="~{fragments/nav :: div}"></div>
     <header class="body-header"><h2 th:text="${recipe.name}"></h2></header>
@@ -18,6 +15,7 @@
         <div class="container p1rem justify-content-between">
             <div class="flex1">
                 <p th:text="${recipe.description}"></p>
+                <p><span class="bold">Posted by:</span> <span th:text="${recipe.user.username}"></span></p>
                 <p><span class="bold">Category: </span> <span th:text="${recipe.category.name}"></span></p>
                 <p><span class="bold">Difficulty: </span> <span th:text="${recipe.difficulty.name}"></span></p>
                 <p><span class="bold">Events: </span>
@@ -49,7 +47,7 @@
             <section>
                 <header><h3>Recipe Stats</h3></header>
                 <div>
-                    <p><span class="bold">Rating:</span> <span th:text="${rating}"></span></p>
+                    <p><span class="bold">Rating:</span> <span th:text="${#numbers.formatDecimal(rating, 1, 2)}"></span></p>
                     <p><span class="bold">Recipe created at:</span> <span th:text="${#temporals.format(recipe.createdAt, 'MM/dd/yyyy')}"></span></p>
                     <p><span class="bold">Favourites:</span> <span th:text="${favourites}"></span></p>
                     <p><span class="bold">Done:</span> <span th:text="${done}"></span></p>
@@ -58,12 +56,51 @@
             <section>
                 <header><h3>Actions</h3></header>
                 <div>
-                    <button class="favourite-btn">Add to Favourites</button>
-                    <button class="done-btn">Mark as Done</button>
+                    <div th:if="${alreadyFavourite}">
+                       <form th:action="@{/favourites/remove}" method="post">
+                           <input type="hidden" name="recipeId" th:value="${recipe.id}">
+                           <button type="submit" class="favourite-btn-remove">Remove from Favourites</button>
+                       </form>
+                    </div>
+                    <div th:unless="${alreadyFavourite}">
+                        <form th:action="@{/favourites/add}" method="post">
+                            <input type="hidden" name="recipeId" th:value="${recipe.id}">
+                            <button type="submit" class="favourite-btn-add">Add to Favourites</button>
+                        </form>
+                    </div>
+                    <div th:if="${alreadyDone}">
+                        <form th:action="@{/history/remove}" method="post">
+                            <input type="hidden" name="recipeId" th:value="${recipe.id}">
+                            <button type="submit" class="done-btn-remove">Mark as Not Done</button>
+                        </form>
+                    </div>
+                    <div th:unless="${alreadyDone}">
+                        <form th:action="@{/history/add}" method="post">
+                            <input type="hidden" name="recipeId" th:value="${recipe.id}">
+                            <button type="submit" class="done-btn-add">Mark as Done</button>
+                        </form>
+                    </div>
                 </div>
             </section>
         </aside>
     </div>
+    <section>
+        <header>
+            <h3>Rate this recipe</h3>
+        </header>
+        <div class="p1rem">
+            <form th:action="@{/ratings/}" method="post" th:object="${rateRecipe}">
+                <input type="hidden" name="recipeId" th:value="${recipe.id}" th:field="*{recipeId}">
+                <label for="rating">Rate this recipe:</label>
+                <input type="number" id="rating" name="rating" min="0.01" max="9.99" step="0.01" th:field="*{rating}" th:value="*{rating}" required>
+                <button type="submit" class="black-button">Submit</button>
+
+                <div th:if="${#fields.hasErrors('rating')}" class="error-in-form">
+                    <span th:errors="*{rating}"></span>
+                </div>
+            </form>
+        </div>
+    </section>
     <section>
         <header>
             <h3>Comments</h3>

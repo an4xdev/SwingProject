@@ -18,6 +18,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class AddFormDTO {
+    // TODO: move messages to properties file?
     @NotNull(message = "Unknown error, please contact the administrator")
     private Long id;
 
