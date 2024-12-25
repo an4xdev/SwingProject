@@ -23,4 +23,6 @@ public interface IRecipeService {
     List<Recipe> findByEvent(String event);
 
     List<Recipe> findBySpecification(@Valid SearchFormDTO searchFormDTO);
+
+    void save(Recipe recipe);
 }

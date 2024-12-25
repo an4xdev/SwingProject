@@ -29,6 +29,7 @@ public class AddFormDTO {
     @Size(min = 3, max = 500, message = "Description must be between 3 and 500 characters")
     private String description;
 
+    private Boolean requireOven;
 
     private List<Ingredient> ingredients;
     private List<Ingredient> ingredientsAdded;
@@ -48,8 +49,7 @@ public class AddFormDTO {
     @Min(value = 1, message = "Category is required")
     private Long categoryId;
 
-    @Min(value = 1, message = "Time is required")
-    private Long time;
+    private @Min(value = 1, message = "Time is required") Integer time;
 
     public AddFormDTO(Long id, String name) {
         this.id = id;

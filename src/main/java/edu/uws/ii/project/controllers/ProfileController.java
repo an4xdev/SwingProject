@@ -21,7 +21,7 @@ public class ProfileController {
         this.userService = userService;
     }
 
-    @GetMapping
+    @GetMapping("/")
     public String profile(Model model) {
         var userId = userService.getCurrentUserId();
 

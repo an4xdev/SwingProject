@@ -2,23 +2,16 @@ package edu.uws.ii.project.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
-@NoArgsConstructor
 @Entity
 @Data
-@Table(name = "comments")
-public class Comment {
+@NoArgsConstructor
+@Table(name = "ratings")
+public class Rating {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
-    private String content;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -28,9 +21,12 @@ public class Comment {
     @JoinColumn(name = "recipe_id", nullable = false)
     private Recipe recipe;
 
-    public Comment(String content, Recipe recipe, User user) {
-        this.content = content;
-        this.recipe = recipe;
+    @Column(nullable = false)
+    private Float rating;
+
+    public Rating(User user, Recipe recipe, Float rating) {
         this.user = user;
+        this.recipe = recipe;
+        this.rating = rating;
     }
 }

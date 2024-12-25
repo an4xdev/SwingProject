@@ -2,6 +2,7 @@ package edu.uws.ii.project.services.events;
 
 import edu.uws.ii.project.domain.Event;
 import edu.uws.ii.project.dtos.ManageDTO;
+import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
@@ -19,4 +20,6 @@ public interface IEventService {
     void update(Long id, String name);
 
     void save(String name);
+
+    List<Event> findAllByIds(@Size(min = 1, message = "Events must contain at least 1 event") List<Long> eventIds);
 }

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -19,11 +20,18 @@ public class Recipe {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private String description;
+
+    @Column(nullable = false)
     private String photoPath;
+
+    @Column(nullable = false)
     private Integer cookingTime;
-    private Float rating;
     private Boolean requireOven;
     private LocalDateTime createdAt;
 
@@ -67,13 +75,15 @@ public class Recipe {
     @ManyToMany(mappedBy = "favouriteRecipes")
     private Set<User> favouriteByUsers;
 
-    public Recipe(String name, String description, String photoPath, Integer cookingTime, Float rating, Boolean requireOven, LocalDateTime createdAt, User user, Set<Ingredient> ingredients, Category category, Difficulty difficulty, Set<Event> events) {
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Rating> ratings;
+
+    public Recipe(String name, String description, String photoPath, Integer cookingTime,Boolean requireOven, LocalDateTime createdAt, User user, Set<Ingredient> ingredients, Category category, Difficulty difficulty, Set<Event> events) {
         this.id = null;
         this.name = name;
         this.description = description;
         this.photoPath = photoPath;
         this.cookingTime = cookingTime;
-        this.rating = rating;
         this.requireOven = requireOven;
         this.createdAt = createdAt;
         this.user = user;
@@ -81,5 +91,10 @@ public class Recipe {
         this.category = category;
         this.difficulty = difficulty;
         this.events = events;
+        this.steps = new HashSet<>();
+        this.comments = new HashSet<>();
+        this.recipeHistories = new HashSet<>();
+        this.favouriteByUsers = new HashSet<>();
+        this.ratings = new HashSet<>();
     }
 }

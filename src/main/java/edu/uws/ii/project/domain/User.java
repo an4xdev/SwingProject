@@ -9,10 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
@@ -25,8 +22,14 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String username;
+
+    @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
     private String email;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -76,9 +79,17 @@ public class User implements UserDetails {
     )
     private Set<Recipe> favouriteRecipes;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Rating> ratings;
+
     public User(String username, String password, String email) {
         this.username = username;
         this.password = password;
         this.email = email;
+        this.comments = new ArrayList<>();
+        this.favourites = new ArrayList<>();
+        this.recipeHistories = new ArrayList<>();
+        this.favouriteRecipes = new HashSet<>();
+        this.ratings = new HashSet<>();
     }
 }

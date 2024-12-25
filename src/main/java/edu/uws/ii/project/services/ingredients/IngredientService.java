@@ -25,4 +25,9 @@ public class IngredientService implements IIngredientsService {
     public List<Ingredient> findAllByRecipe(Recipe recipe) {
         return ingredientRepository.findAllByRecipes(new HashSet<>(List.of(recipe)));
     }
+
+    @Override
+    public Ingredient save(Ingredient ingredient) {
+        return ingredientRepository.save(ingredient);
+    }
 }

@@ -49,6 +49,8 @@
             <section>
                 <header><h3>Recipe Stats</h3></header>
                 <div>
+                    <p><span class="bold">Rating:</span> <span th:text="${rating}"></span></p>
+                    <p><span class="bold">Recipe created at:</span> <span th:text="${#temporals.format(recipe.createdAt, 'MM/dd/yyyy')}"></span></p>
                     <p><span class="bold">Favourites:</span> <span th:text="${favourites}"></span></p>
                     <p><span class="bold">Done:</span> <span th:text="${done}"></span></p>
                 </div>

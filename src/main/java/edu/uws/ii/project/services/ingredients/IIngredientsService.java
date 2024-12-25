@@ -8,4 +8,6 @@ import java.util.List;
 public interface IIngredientsService {
     List<Ingredient> findAll();
     List<Ingredient> findAllByRecipe(Recipe recipe);
+
+    Ingredient save(Ingredient ingredient);
 }

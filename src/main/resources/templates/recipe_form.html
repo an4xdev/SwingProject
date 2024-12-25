@@ -15,7 +15,14 @@
 </header>
 <div class="add-recipe-container">
     <h2>Add New Recipe</h2>
-    <form th:action="@{/recipes}" th:object="${recipeForm}" method="post" enctype="multipart/form-data">
+    <form th:action="@{/recipes/form}" th:object="${recipeForm}" method="post" enctype="multipart/form-data">
+
+        <div class="add-recipe-form-panel">
+            <input type="hidden" th:field="*{id}" name="id">
+            <div th:if="${#fields.hasErrors('id')}" class="error-in-form">
+                <span th:errors="*{id}"></span>
+            </div>
+        </div>
 
         <div class="add-recipe-form-panel">
             <label for="title">Recipe Title</label>
@@ -42,6 +49,11 @@
             <div th:if="${#fields.hasErrors('image')}" class="error-in-form">
                 <span th:errors="*{image}"></span>
             </div>
+        </div>
+
+        <div class="add-recipe-form-panel">
+            <label for="requireOven">Require oven:</label>
+            <input id="requireOven" name="requireOven" th:field="*{requireOven}" type="checkbox">
         </div>
 
         <div class="add-recipe-form-panel">
@@ -108,8 +120,8 @@
             <h3>New Ingredients</h3>
             <div id="new-ingredients"></div>
             <button type="button" id="add-ingredient">Add New Ingredient</button>
-            <div th:if="${#fields.hasErrors('ingredientsAdded')}" class="error-in-form">
-                <span th:errors="*{ingredientsAdded}"></span>
+            <div th:if="${#fields.hasErrors('ingredients')}" class="error-in-form">
+                <span th:errors="*{ingredients}"></span>
             </div>
         </div>
 
@@ -132,6 +144,8 @@
         let ingredientAddedIndex = 0;
         let stepIndex = 0;
 
+        let ingredientList = [];
+
         $('#add-ingredient').on('click', function () {
             $('#new-ingredients').append(`
             <div>
@@ -140,6 +154,27 @@
             </div>
         `);
             ingredientAddedIndex++;
+        });
+
+        $('#new-ingredients').on('blur', 'input[type="text"]', function () {
+            const inputValue = $(this).val().trim();
+
+            let exists = false;
+            $('#ingredient-list span').each(function () {
+                if ($(this).text().trim().toLowerCase() === inputValue.toLowerCase()) {
+                    exists = true;
+                    return false;
+                }
+            });
+
+            if (exists) {
+                alert('This ingredient is already existing on list!');
+                $(this).css('border', '1px solid red');
+                $(this).val('');
+                $(this).focus();
+            } else {
+                $(this).css('border', '');
+            }
         });
 
         $('#new-ingredients').on('click', '.remove-ingredient', function () {
@@ -151,6 +186,14 @@
             if (selectedIngredient === '-1') {
                 return;
             }
+
+            if(ingredientList.includes(selectedIngredient)){
+                alert('Ingredient already added');
+                return;
+            }
+
+            ingredientList.push(selectedIngredient);
+
             const selectedIngredientName = $(`#ingredient-select option[value="${selectedIngredient}"]`).text();
 
             if (selectedIngredient) {

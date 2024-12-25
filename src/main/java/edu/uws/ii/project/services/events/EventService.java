@@ -70,4 +70,9 @@ public class EventService implements IEventService {
     public void save(String name) {
         eventRepository.save(new Event(name));
     }
+
+    @Override
+    public List<Event> findAllByIds(List<Long> eventIds) {
+        return eventRepository.findAllById(eventIds);
+    }
 }

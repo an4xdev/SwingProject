@@ -27,9 +27,10 @@ public class RepositoryInitializer {
     private final FavouriteRepository favouriteRepository;
     private final RecipeHistoryRepository recipeHistoryRepository;
     private final StepRepository stepRepository;
+    private final RatingRepository ratingRepository;
 
     @Autowired
-    public RepositoryInitializer(CategoryRepository categoryRepository, DifficultyRepository difficultyRepository, EventRepository eventRepository, RoleRepository roleRepository, IngredientRepository ingredientRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, RecipeRepository recipeRepository, CommentRepository commentRepository, FavouriteRepository favouriteRepository, RecipeHistoryRepository recipeHistoryRepository, StepRepository stepRepository) {
+    public RepositoryInitializer(CategoryRepository categoryRepository, DifficultyRepository difficultyRepository, EventRepository eventRepository, RoleRepository roleRepository, IngredientRepository ingredientRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, RecipeRepository recipeRepository, CommentRepository commentRepository, FavouriteRepository favouriteRepository, RecipeHistoryRepository recipeHistoryRepository, StepRepository stepRepository, RatingRepository ratingRepository) {
         this.categoryRepository = categoryRepository;
         this.difficultyRepository = difficultyRepository;
         this.eventRepository = eventRepository;
@@ -42,6 +43,7 @@ public class RepositoryInitializer {
         this.favouriteRepository = favouriteRepository;
         this.recipeHistoryRepository = recipeHistoryRepository;
         this.stepRepository = stepRepository;
+        this.ratingRepository = ratingRepository;
     }
 
     @Bean
@@ -125,23 +127,23 @@ public class RepositoryInitializer {
 
             // photo `chmura.jpg` got from: https://picsum.photos/ (MIT License)
 
-            Recipe pancakes = new Recipe("Pancakes", "Pancakes are a breakfast staple and are loved by many. They are easy to make and can be customized to your liking.", "/user_images/chmura.jpg", 20, 8.75f, false, LocalDateTime.now(), user1, new HashSet<>(List.of(sugar, milk, flour, eggs)), breakfast, easy, new HashSet<>(List.of(casual)));
+            Recipe pancakes = new Recipe("Pancakes", "Pancakes are a breakfast staple and are loved by many. They are easy to make and can be customized to your liking.", "/user_images/chmura.jpg", 20, false, LocalDateTime.now(), user1, new HashSet<>(List.of(sugar, milk, flour, eggs)), breakfast, easy, new HashSet<>(List.of(casual)));
 
-            Recipe strawberryCake = new Recipe("Strawberry Cake", "Strawberry Cake is great cake for special events", "/user_images/chmura.jpg", 30, 6.87f, true, LocalDateTime.now(), user1 ,new HashSet<>(List.of(sugar, milk, flour,eggs, strawberries)), dessert, medium, new HashSet<>(List.of(birthday, anniversary, christmas)));
+            Recipe strawberryCake = new Recipe("Strawberry Cake", "Strawberry Cake is great cake for special events", "/user_images/chmura.jpg", 30, true, LocalDateTime.now(), user1 ,new HashSet<>(List.of(sugar, milk, flour,eggs, strawberries)), dessert, medium, new HashSet<>(List.of(birthday, anniversary, christmas)));
 
-            Recipe spaghettiCarbonara = new Recipe("Spaghetti carbonara", "Great italian dish for dinner.", "/user_images/chmura.jpg", 30, 5.20f, false, LocalDateTime.now(), user1, new HashSet<>(List.of(pasta, milk, beef)), dinner, hard, new HashSet<>(List.of(casual)));
+            Recipe spaghettiCarbonara = new Recipe("Spaghetti carbonara", "Great italian dish for dinner.", "/user_images/chmura.jpg", 30, false, LocalDateTime.now(), user1, new HashSet<>(List.of(pasta, milk, beef)), dinner, hard, new HashSet<>(List.of(casual)));
 
-            Recipe sandwich = new Recipe("Sandwich", "Simple sandwich for quick breakfast.", "/user_images/chmura.jpg", 30, 4.20f, false, LocalDateTime.now(), user1, new HashSet<>(List.of(bread, cheese, ham)), breakfast, easy, new HashSet<>(List.of(casual)));
+            Recipe sandwich = new Recipe("Sandwich", "Simple sandwich for quick breakfast.", "/user_images/chmura.jpg", 30, false, LocalDateTime.now(), user1, new HashSet<>(List.of(bread, cheese, ham)), breakfast, easy, new HashSet<>(List.of(casual)));
 
-            Recipe pomodoroSoup = new Recipe("Pomodoro Soup", "Simple pomodoro soup from broth from yesterday", "/user_images/chmura.jpg", 30, 7.65f, false, LocalDateTime.now(), user2 ,new HashSet<>(List.of(tomatoSauce, pasta)), dinner, medium, new HashSet<>(List.of(casual)));
+            Recipe pomodoroSoup = new Recipe("Pomodoro Soup", "Simple pomodoro soup from broth from yesterday", "/user_images/chmura.jpg", 30, false, LocalDateTime.now(), user2 ,new HashSet<>(List.of(tomatoSauce, pasta)), dinner, medium, new HashSet<>(List.of(casual)));
 
-            Recipe beefWithPotatoes = new Recipe("Beef with potatoes", "Classic dinner for casual and specials events.", "/user_images/chmura.jpg", 30, 9.81f, false, LocalDateTime.now(), user2, new HashSet<>(List.of(potatoes, beef)), dinner, hard, new HashSet<>(List.of(casual, birthday, anniversary)));
+            Recipe beefWithPotatoes = new Recipe("Beef with potatoes", "Classic dinner for casual and specials events.", "/user_images/chmura.jpg", 30, false, LocalDateTime.now(), user2, new HashSet<>(List.of(potatoes, beef)), dinner, hard, new HashSet<>(List.of(casual, birthday, anniversary)));
 
-            Recipe hawaiianPizza = new Recipe("Hawaiian pizza", "Only true pizza, change my mind.", "/user_images/chmura.jpg", 30, 9.99f, true, LocalDateTime.now(), user3 ,new HashSet<>(List.of(flour, eggs, pineapple, ham)), dinner, medium, new HashSet<>(List.of(casual, birthday)));
+            Recipe hawaiianPizza = new Recipe("Hawaiian pizza", "Only true pizza, change my mind.", "/user_images/chmura.jpg", 30, true, LocalDateTime.now(), user3 ,new HashSet<>(List.of(flour, eggs, pineapple, ham)), dinner, medium, new HashSet<>(List.of(casual, birthday)));
 
-            Recipe pizzaSalami = new Recipe("Pizza salami", "Classical pizza great for all events.", "/user_images/chmura.jpg", 30, 2.13f, true, LocalDateTime.now(), user3, new HashSet<>(List.of(flour, eggs, salami, tomatoSauce)), dinner, hard, new HashSet<>(List.of(casual, birthday, anniversary)));
+            Recipe pizzaSalami = new Recipe("Pizza salami", "Classical pizza great for all events.", "/user_images/chmura.jpg", 30, true, LocalDateTime.now(), user3, new HashSet<>(List.of(flour, eggs, salami, tomatoSauce)), dinner, hard, new HashSet<>(List.of(casual, birthday, anniversary)));
 
-            Recipe bar = new Recipe("Bar", "Simple bar for quick snack.", "/user_images/chmura.jpg", 30, 3.17f, false, LocalDateTime.now(), user3 ,new HashSet<>(List.of(flour, eggs, sugar, butter)), snack, easy, new HashSet<>(List.of(casual)));
+            Recipe bar = new Recipe("Bar", "Simple bar for quick snack.", "/user_images/chmura.jpg", 30, false, LocalDateTime.now(), user3 ,new HashSet<>(List.of(flour, eggs, sugar, butter)), snack, easy, new HashSet<>(List.of(casual)));
 
             if (recipeRepository.count() == 0) {
                 recipeRepository.saveAll(List.of(pancakes, strawberryCake, spaghettiCarbonara, sandwich, pomodoroSoup, beefWithPotatoes, hawaiianPizza, pizzaSalami, bar));
@@ -193,47 +195,79 @@ public class RepositoryInitializer {
             }
 
             // Initialize steps
-            Step step1 = new Step("Mix all ingredients together", 1, pancakes);
-            Step step2 = new Step("Cook on a pan", 2, pancakes);
-            Step step3 = new Step("Serve with your favorite toppings", 3, pancakes);
+            Step step1 = new Step("Mix all ingredients together", pancakes);
+            Step step2 = new Step("Cook on a pan", pancakes);
+            Step step3 = new Step("Serve with your favorite toppings", pancakes);
 
-            Step step4 = new Step("Mix all ingredients together", 1, strawberryCake);
-            Step step5 = new Step("Bake in the oven", 2, strawberryCake);
-            Step step6 = new Step("Put to fridge", 3, strawberryCake);
+            Step step4 = new Step("Mix all ingredients together", strawberryCake);
+            Step step5 = new Step("Bake in the oven", strawberryCake);
+            Step step6 = new Step("Put to fridge", strawberryCake);
 
-            Step step7 = new Step("Mix all ingredients together", 1, spaghettiCarbonara);
-            Step step8 = new Step("Cook on a pan", 2, spaghettiCarbonara);
-            Step step9 = new Step("Serve on plate with pasta", 3, spaghettiCarbonara);
+            Step step7 = new Step("Mix all ingredients together", spaghettiCarbonara);
+            Step step8 = new Step("Cook on a pan", spaghettiCarbonara);
+            Step step9 = new Step("Serve on plate with pasta", spaghettiCarbonara);
 
-            Step step10 = new Step("Prepare ingredients", 1, sandwich);
-            Step step11 = new Step("Combine to sandwich", 2, sandwich);
-            Step step12 = new Step("Serve on plate", 3, sandwich);
+            Step step10 = new Step("Prepare ingredients", sandwich);
+            Step step11 = new Step("Combine to sandwich", sandwich);
+            Step step12 = new Step("Serve on plate", sandwich);
 
-            Step step13 = new Step("Prepare ingredients", 1, pomodoroSoup);
-            Step step14 = new Step("Put all to pot", 2, pomodoroSoup);
-            Step step15 = new Step("Serve on plate", 3, pomodoroSoup);
+            Step step13 = new Step("Prepare ingredients", pomodoroSoup);
+            Step step14 = new Step("Put all to pot", pomodoroSoup);
+            Step step15 = new Step("Serve on plate", pomodoroSoup);
 
-            Step step16 = new Step("Prepare ingredients", 1, beefWithPotatoes);
-            Step step17 = new Step("Cook on a pan", 2, beefWithPotatoes);
-            Step step18 = new Step("Prepare potatoes", 3, beefWithPotatoes);
-            Step step19 = new Step("Serve on plate", 4, beefWithPotatoes);
+            Step step16 = new Step("Prepare ingredients", beefWithPotatoes);
+            Step step17 = new Step("Cook on a pan", beefWithPotatoes);
+            Step step18 = new Step("Prepare potatoes", beefWithPotatoes);
+            Step step19 = new Step("Serve on plate", beefWithPotatoes);
 
-            Step step20 = new Step("Prepare ingredients", 1, hawaiianPizza);
-            Step step21 = new Step("Prepare dough", 2, hawaiianPizza);
-            Step step22 = new Step("Put all ingredients on dough", 3, hawaiianPizza);
-            Step step23 = new Step("Bake in the oven", 4, hawaiianPizza);
+            Step step20 = new Step("Prepare ingredients", hawaiianPizza);
+            Step step21 = new Step("Prepare dough", hawaiianPizza);
+            Step step22 = new Step("Put all ingredients on dough", hawaiianPizza);
+            Step step23 = new Step("Bake in the oven", hawaiianPizza);
 
-            Step step24 = new Step("Prepare ingredients", 1, pizzaSalami);
-            Step step25 = new Step("Prepare dough", 2, pizzaSalami);
-            Step step26 = new Step("Put all ingredients on dough", 3, pizzaSalami);
-            Step step27 = new Step("Bake in the oven", 4, pizzaSalami);
+            Step step24 = new Step("Prepare ingredients", pizzaSalami);
+            Step step25 = new Step("Prepare dough", pizzaSalami);
+            Step step26 = new Step("Put all ingredients on dough", pizzaSalami);
+            Step step27 = new Step("Bake in the oven", pizzaSalami);
 
-            Step step28 = new Step("Mix all ingredients together", 1, bar);
-            Step step29 = new Step("Bake in the oven", 2, bar);
-            Step step30 = new Step("Eat when it cools down", 3, bar);
+            Step step28 = new Step("Mix all ingredients together", bar);
+            Step step29 = new Step("Bake in the oven", bar);
+            Step step30 = new Step("Eat when it cools down", bar);
 
             if(stepRepository.count() == 0) {
                 stepRepository.saveAll(List.of(step1, step2, step3, step4, step5, step6, step7, step8, step9, step10, step11, step12, step13, step14, step15, step16, step17, step18, step19, step20, step21, step22, step23, step24, step25, step26, step27, step28, step29, step30));
+            }
+
+            Rating rating1 = new Rating( user1, pancakes, 5.23F);
+            Rating rating2 = new Rating( user2, pancakes, 4.23F);
+            Rating rating3 = new Rating( user3, pancakes, 6.23F);
+            Rating rating4 = new Rating( user1, strawberryCake, 5.23F);
+            Rating rating5 = new Rating( user2, strawberryCake, 4.23F);
+            Rating rating6 = new Rating( user3, strawberryCake, 5.23F);
+            Rating rating7 = new Rating( user1, spaghettiCarbonara, 5.23F);
+            Rating rating8 = new Rating( user2, spaghettiCarbonara, 8.23F);
+            Rating rating9 = new Rating( user3, spaghettiCarbonara, 3.23F);
+            Rating rating10 = new Rating( user1, sandwich, 5.23F);
+            Rating rating11 = new Rating( user2, sandwich, 5.23F);
+            Rating rating12 = new Rating( user3, sandwich, 3.23F);
+            Rating rating13 = new Rating( user1, pomodoroSoup, 5.23F);
+            Rating rating14 = new Rating( user2, pomodoroSoup, 8.23F);
+            Rating rating15 = new Rating( user3, pomodoroSoup, 3.23F);
+            Rating rating16 = new Rating( user1, beefWithPotatoes, 9.23F);
+            Rating rating17 = new Rating( user2, beefWithPotatoes, 4.23F);
+            Rating rating18 = new Rating( user3, beefWithPotatoes, 3.23F);
+            Rating rating19 = new Rating( user1, hawaiianPizza, 7.23F);
+            Rating rating20 = new Rating( user2, hawaiianPizza, 6.23F);
+            Rating rating21 = new Rating( user3, hawaiianPizza, 9.23F);
+            Rating rating22 = new Rating( user1, pizzaSalami, 5.23F);
+            Rating rating23 = new Rating( user2, pizzaSalami, 8.23F);
+            Rating rating24 = new Rating( user3, pizzaSalami, 3.23F);
+            Rating rating25 = new Rating( user1, bar, 5.23F);
+            Rating rating26 = new Rating( user2, bar, 8.23F);
+            Rating rating27 = new Rating( user3, bar, 3.23F);
+
+            if(ratingRepository.count() == 0) {
+                ratingRepository.saveAll(List.of(rating1, rating2, rating3, rating4, rating5, rating6, rating7, rating8, rating9, rating10, rating11, rating12, rating13, rating14, rating15, rating16, rating17, rating18, rating19, rating20, rating21, rating22, rating23, rating24, rating25, rating26, rating27));
             }
         };
     }

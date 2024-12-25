@@ -46,4 +46,13 @@ public class UserService implements IUserService{
         }
         return "";
     }
+
+    @Override
+    public User getCurrentUser() {
+        var id = getCurrentUserId();
+        if (id != null) {
+            return userRepository.findById(id).get();
+        }
+        return null;
+    }
 }

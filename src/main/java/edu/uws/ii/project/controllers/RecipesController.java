@@ -8,10 +8,14 @@ import edu.uws.ii.project.services.difficulties.IDifficultyService;
 import edu.uws.ii.project.services.events.IEventService;
 import edu.uws.ii.project.services.favourites.IFavouriteService;
 import edu.uws.ii.project.services.ingredients.IIngredientsService;
+import edu.uws.ii.project.services.rating.IRatingService;
 import edu.uws.ii.project.services.recipe_history.IRecipeHistoryService;
 import edu.uws.ii.project.services.recipes.IRecipeService;
 import edu.uws.ii.project.services.steps.IStepService;
+import edu.uws.ii.project.services.user.IUserService;
 import jakarta.validation.Valid;
+import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,13 +29,18 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
+@Log4j2
 @Controller
 @RequestMapping("/recipes")
 public class RecipesController {
 
-    private static final String UPLOAD_DIR = "src/main/resources/static/user_images/";
+    private final String UPLOAD_DIR = "src/main/resources/static/user_images/";
+    private final String PATH_TO_IMAGES = "/user_images/";
 
     private final IRecipeService recipeService;
     private final ICommentService commentService;
@@ -42,9 +51,11 @@ public class RecipesController {
     private final IRecipeHistoryService recipeHistoryService;
     private final IEventService eventService;
     private final ICategoryService categoryService;
+    private final IUserService userService;
+    private final IRatingService ratingService;
 
     @Autowired
-    public RecipesController(IRecipeService recipeService, ICommentService commentService, IIngredientsService ingredientsService, IStepService stepService, IDifficultyService difficultyService, IFavouriteService favouriteService, IRecipeHistoryService recipeHistoryService, IEventService eventService, ICategoryService categoryService) {
+    public RecipesController(IRecipeService recipeService, ICommentService commentService, IIngredientsService ingredientsService, IStepService stepService, IDifficultyService difficultyService, IFavouriteService favouriteService, IRecipeHistoryService recipeHistoryService, IEventService eventService, ICategoryService categoryService, IUserService userService, IRatingService ratingService) {
         this.recipeService = recipeService;
         this.ingredientsService = ingredientsService;
         this.stepService = stepService;
@@ -54,6 +65,8 @@ public class RecipesController {
         this.recipeHistoryService = recipeHistoryService;
         this.eventService = eventService;
         this.categoryService = categoryService;
+        this.userService = userService;
+        this.ratingService = ratingService;
     }
 
     @GetMapping("/page")
@@ -72,12 +85,14 @@ public class RecipesController {
         var ingredients = ingredientsService.findAllByRecipe(recipe);
         var steps = stepService.findAllByRecipeId(id);
         var comments = commentService.findAllByRecipeId(id);
+        var rating = ratingService.calculateRatingByRecipe(recipe);
         model.addAttribute("recipe", recipe);
         model.addAttribute("favourites", favourites);
         model.addAttribute("done", done);
         model.addAttribute("ingredients", ingredients);
         model.addAttribute("steps", steps);
         model.addAttribute("comments", comments);
+        model.addAttribute("rating", rating);
         return "details";
     }
 
@@ -117,35 +132,91 @@ public class RecipesController {
     @PostMapping("/form")
     public String addRecipe(@Valid @ModelAttribute("recipeForm") AddFormDTO recipeForm, BindingResult bindingResult) {
 
-        if (recipeForm.getIngredients() == null || recipeForm.getIngredients().isEmpty()) {
-            bindingResult.rejectValue("ingredients", "error.recipeForm", "At least one ingredient is required");
-        }
+        int existingIngredientsCount = recipeForm.getIngredients() == null ? 0 : recipeForm.getIngredients().size();
 
-        if (recipeForm.getIngredientsAdded() == null || recipeForm.getIngredientsAdded().isEmpty()) {
-            bindingResult.rejectValue("ingredientsAdded", "error.recipeForm", "At least one added ingredient is required");
+        int newIngredientsCount = recipeForm.getIngredientsAdded() == null ? 0 : recipeForm.getIngredientsAdded().size();
+
+        if(existingIngredientsCount == 0 && newIngredientsCount == 0){
+            bindingResult.rejectValue("ingredients", "error.recipeForm", "At least one ingredient is required");
         }
 
         if (bindingResult.hasErrors()) {
             return "recipe_form";
         }
 
+        String photoPath = null;
 
-//        MultipartFile file = recipeForm.getImage();
-//
-//        if (file != null && !file.isEmpty()) {
-//            try {
-//                Files.createDirectories(Paths.get(UPLOAD_DIR));
-//
-//                Path filePath = Paths.get(UPLOAD_DIR + file.getOriginalFilename());
-//                Files.write(filePath, file.getBytes());
-//
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//                return "redirect:/add_recipe";
-//            }
-//        }
+        MultipartFile file = recipeForm.getImage();
 
-        return "redirect:/recipes/form";
+        if (file != null && !file.isEmpty()) {
+            try {
+                Files.createDirectories(Paths.get(UPLOAD_DIR));
+
+                Path filePath = Paths.get(UPLOAD_DIR + file.getOriginalFilename());
+                Files.write(filePath, file.getBytes());
+
+                photoPath = PATH_TO_IMAGES + file.getOriginalFilename();
+
+            } catch (IOException e) {
+                log.log(Level.ERROR, "Error while saving image", e);
+                return "redirect:/add_recipe";
+            }
+        }
+
+        // save new ingredients added by user
+        ArrayList<Ingredient> ingredientsToRecipe = new ArrayList<>();
+
+        if (!recipeForm.getIngredientsAdded().isEmpty()) {
+            for (Ingredient ingredient : recipeForm.getIngredientsAdded()) {
+                // skip empty ingredients
+                // another validation after js validation
+                if(ingredient.getName().isBlank()){
+                    continue;
+                }
+                ingredientsToRecipe.add(ingredientsService.save(ingredient));
+            }
+        }
+
+        // add existing ingredients to recipe
+        ingredientsToRecipe.addAll(recipeForm.getIngredients());
+
+        // get category by id
+
+        Category category = categoryService.findById(recipeForm.getCategoryId());
+
+        // get difficulty by id
+
+        Difficulty difficulty = difficultyService.findById(recipeForm.getDifficultyId());
+
+        // get events by ids
+
+        List<Event> events = eventService.findAllByIds(recipeForm.getEventIds());
+
+        // get current user
+
+        User user = userService.getCurrentUser();
+
+        // create new recipe
+
+        Recipe recipe = new Recipe(recipeForm.getName(), recipeForm.getDescription(), photoPath, recipeForm.getTime(), recipeForm.getRequireOven(), LocalDateTime.now(), user, new HashSet<>(ingredientsToRecipe), category, difficulty, new HashSet<>(events));
+        recipe.setId(null);
+
+        // save recipe
+
+        recipeService.save(recipe);
+
+        // save steps
+
+        for (var step : recipeForm.getSteps()) {
+            step.setRecipe(recipe);
+        }
+
+        stepService.saveAll(recipeForm.getSteps());
+
+        // Save the recipe again with steps
+        recipeService.save(recipe);
+
+        return "redirect:/profile/";
     }
 
     @PutMapping("/form")

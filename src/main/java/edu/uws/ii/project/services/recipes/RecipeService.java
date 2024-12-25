@@ -110,5 +110,10 @@ public class RecipeService implements IRecipeService {
         }
         return recipeRepository.findAll(spec, sort).stream().distinct().collect(Collectors.toList());
     }
+
+    @Override
+    public void save(Recipe recipe) {
+        recipeRepository.save(recipe);
+    }
 }
 
