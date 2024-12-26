@@ -249,7 +249,7 @@ section header{
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.view-recipe-btn {
+.view-recipe-btn, .add-recipe-button {
     background-color: #ff6f61;
     color: white;
     padding: 10px 20px;
@@ -259,7 +259,7 @@ section header{
     text-decoration: none;
 }
 
-.view-recipe-btn:hover {
+.view-recipe-btn:hover, .add-recipe-button:hover {
     background-color: #ff5f51;
 }
 

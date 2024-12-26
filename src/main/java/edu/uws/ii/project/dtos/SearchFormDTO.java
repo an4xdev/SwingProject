@@ -13,19 +13,18 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class SearchFormDTO {
-    // TODO: maybe move to a properties file?
-    @NotEmpty(message = "Phrase must not be empty.")
+    @NotEmpty
     private String phrase;
 
-    @Size(min = 1, message = "At least one event must be selected.")
+    @Size(min = 1)
     private List<Long> eventIds;
 
-    @Min(value = 0, message = "If you want to search for all categories select `All`. Otherwise select a category.")
+    @Min(value = 0)
     private Long categoryId;
 
-    @Min(value = 0, message = "If you want to search for all difficulties select `All`. Otherwise select a difficulty.")
+    @Min(value = 0)
     private Long difficultyId;
 
-    @Min(value = 1, message = "You must specify sorting criterion.")
+    @Min(value = 1)
     private Long sortType;
 }

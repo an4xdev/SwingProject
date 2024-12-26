@@ -6,6 +6,30 @@
     <title>Add Recipe - Online Recipe Book</title>
     <link rel="stylesheet" href="/styles/styles.css">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <style>
+        #ingredient-list div button, button#add-ingredient, .remove-ingredient, button#add-step, .remove-step {
+            border: none;
+            padding: 10px 5px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #ingredient-list div button, .remove-ingredient, .remove-step {
+            margin-left: 10px;
+            color: white;
+            background-color: red;
+        }
+
+        button#add-ingredient, button#add-step {
+            background-color: green;
+            color: white;
+            margin-top: 10px;
+        }
+
+        textarea{
+            resize: vertical;
+        }
+    </style>
 </head>
 <body>
 <div th:insert="~{fragments/header :: header}"></div>
@@ -26,7 +50,7 @@
 
         <div class="add-recipe-form-panel">
             <label for="title">Recipe Title</label>
-            <input type="text" id="title" name="title" required th:field="*{name}">
+            <input type="text" id="title" name="title" required th:field="*{name}" minlength="3" maxlength="50">
             <div th:if="${#fields.hasErrors('name')}" class="error-in-form">
                 <span th:errors="*{name}"></span>
             </div>
@@ -34,7 +58,7 @@
 
         <div class="add-recipe-form-panel">
             <label for="description">Description</label>
-            <textarea id="description" name="description" required th:field="*{description}"></textarea>
+            <textarea id="description" name="description" required th:field="*{description}" minlength="3" maxlength="500" ></textarea>
             <div th:if="${#fields.hasErrors('description')}" class="error-in-form">
                 <span th:errors="*{description}"></span>
             </div>
@@ -97,7 +121,6 @@
             </div>
         </div>
 
-<!--        TODO: work on css for buttons -->
         <div class="add-recipe-form-panel">
             <label for="ingredient-select">Select Existing Ingredients</label>
             <select id="ingredient-select">
@@ -128,7 +151,12 @@
 
         <div class="add-recipe-form-panel">
             <h3>Steps</h3>
-            <ol id="new-steps"></ol>
+            <ol id="new-steps">
+                <li style="display: none">
+                    <input type="text" name="steps[0].description" placeholder="New Step Description"/>
+                    <button type="button" class="remove-step">Remove</button>
+                </li>
+            </ol>
             <button type="button" id="add-step">Add New Step</button>
             <div th:if="${#fields.hasErrors('steps')}" class="error-in-form">
                 <span th:errors="*{steps}"></span>
@@ -143,7 +171,7 @@
     $(document).ready(function () {
         let ingredientIndex = 0;
         let ingredientAddedIndex = 0;
-        let stepIndex = 0;
+        let stepIndex = 1;
 
         let ingredientList = [];
 

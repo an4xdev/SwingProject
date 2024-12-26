@@ -150,7 +150,7 @@ public class RecipesController {
         int newIngredientsCount = recipeForm.getIngredientsAdded() == null ? 0 : recipeForm.getIngredientsAdded().size();
 
         if(existingIngredientsCount == 0 && newIngredientsCount == 0){
-            bindingResult.rejectValue("ingredients", "error.recipeForm", "At least one ingredient is required");
+            bindingResult.rejectValue("ingredients", "error.ingredients", "At least one ingredient is required.");
         }
 
         if (bindingResult.hasErrors()) {

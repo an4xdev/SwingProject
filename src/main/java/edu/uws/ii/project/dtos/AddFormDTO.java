@@ -18,16 +18,15 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class AddFormDTO {
-    // TODO: move messages to properties file?
-    @NotNull(message = "Unknown error, please contact the administrator")
+    @NotNull
     private Long id;
 
-    @NotEmpty(message = "Name is required")
-    @Size(min = 3, max = 50, message = "Name must be between 3 and 50 characters")
+    @NotEmpty
+    @Size(min = 3, max = 50)
     private String name;
 
-    @NotEmpty(message = "Description is required")
-    @Size(min = 3, max = 500, message = "Description must be between 3 and 500 characters")
+    @NotEmpty
+    @Size(min = 3, max = 500)
     private String description;
 
     private Boolean requireOven;
@@ -35,22 +34,25 @@ public class AddFormDTO {
     private List<Ingredient> ingredients;
     private List<Ingredient> ingredientsAdded;
 
-    @NotNull(message = "Image is required")
+    @NotNull
     private MultipartFile image;
 
-    @Min(value = 1, message = "Difficulty is required")
+    @Min(value = 1)
     private Long difficultyId;
 
-    @Size(min = 3, max = 50, message = "Steps must contain between 3 and 50 steps")
+    @NotNull
+    @Size(min = 3, max = 50)
     private List<Step> steps;
 
-    @Size(min = 1, message = "Events must contain at least 1 event")
+    @NotNull
+    @Size(min = 1)
     private List<Long> eventIds;
 
-    @Min(value = 1, message = "Category is required")
+    @Min(value = 1)
     private Long categoryId;
 
-    private @Min(value = 1, message = "Time is required") Integer time;
+    @Min(value = 1)
+    private Integer time;
 
     public AddFormDTO(Long id, String name) {
         this.id = id;
@@ -60,5 +62,4 @@ public class AddFormDTO {
         this.steps = new ArrayList<>();
         this.eventIds = new ArrayList<>();
     }
-
 }

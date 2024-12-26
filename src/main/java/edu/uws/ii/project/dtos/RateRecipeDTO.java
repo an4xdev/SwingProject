@@ -12,8 +12,7 @@ import lombok.Setter;
 public class RateRecipeDTO {
     private Long recipeId;
 
-    // TODO: move to properties file?
-    @DecimalMin(value = "0.01", message = "Value must be at least 0.01")
-    @DecimalMax(value = "9.99", message = "Value must not exceed 9.99")
+    @DecimalMin(value = "0.01")
+    @DecimalMax(value = "9.99")
     private Float rating;
 }
