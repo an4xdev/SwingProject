@@ -1,5 +1,6 @@
 package edu.uws.ii.project.services.favourites;
 
+import edu.uws.ii.project.domain.Favourite;
 import edu.uws.ii.project.domain.Recipe;
 
 public interface IFavouriteService {
@@ -9,4 +10,8 @@ public interface IFavouriteService {
     void add(Long recipeId);
 
     void remove(Long recipeId);
+
+    void delete(Favourite favourite);
+
+    void deleteByRecipeId(Long recipeId);
 }

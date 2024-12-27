@@ -56,9 +56,6 @@ public class Recipe {
     )
     private Set<Event> events;
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Comment> comments;
-
     @ManyToMany
     @JoinTable(
             name = "recipes_ingredients",
@@ -68,13 +65,16 @@ public class Recipe {
     private Set<Ingredient> ingredients;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Comment> comments;
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Step> steps;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<RecipeHistory> recipeHistories;
 
-    @ManyToMany(mappedBy = "favouriteRecipes")
-    private Set<User> favouriteByUsers;
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Favourite> favourite;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Rating> ratings;
@@ -95,7 +95,7 @@ public class Recipe {
         this.steps = new HashSet<>();
         this.comments = new HashSet<>();
         this.recipeHistories = new HashSet<>();
-        this.favouriteByUsers = new HashSet<>();
+        this.favourite = new HashSet<>();
         this.ratings = new HashSet<>();
     }
 }

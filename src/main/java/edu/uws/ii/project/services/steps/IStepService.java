@@ -9,4 +9,6 @@ public interface IStepService {
     List<Step> findAllByRecipeId(Long recipeId);
 
     void saveAll(@Size List<Step> steps);
+
+    void delete(Step step);
 }

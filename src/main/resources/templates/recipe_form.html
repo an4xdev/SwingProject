@@ -38,8 +38,8 @@
     <h2>Recipe form</h2>
 </header>
 <div class="add-recipe-container">
-    <h2>Add New Recipe</h2>
-    <form th:action="@{/recipes/form}" th:object="${recipeForm}" method="post" enctype="multipart/form-data">
+    <h2 th:text="${headerTitle}"></h2>
+    <form th:action="@{/recipes/form}" th:object="${recipeForm}" th:attr="method=${httpMethod}" enctype="multipart/form-data">
 
         <div class="add-recipe-form-panel">
             <input type="hidden" th:field="*{id}" name="id">
@@ -163,7 +163,13 @@
             </div>
         </div>
 
-        <button type="submit" class="submit-recipe-btn">Add Recipe</button>
+        <div th:unless="${editing}">
+            <button type="submit" class="submit-recipe-btn" th:text="${buttonTitle}"></button>
+        </div>
+
+        <div th:if="${editing} and ${#authentication.name == recipe.user.username or ${#authorization.expression('hasRole(''ROLE_ADMIN'')')}}">
+            <button type="submit" class="submit-recipe-btn" th:text="${buttonTitle}"></button>
+        </div>
     </form>
 </div>
 <div th:insert="~{fragments/footer :: footer}"></div>

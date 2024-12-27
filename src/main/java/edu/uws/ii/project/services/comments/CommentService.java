@@ -19,4 +19,9 @@ public class CommentService implements ICommentService {
     public List<Comment> findAllByRecipeId(Long recipeId) {
         return commentRepository.findAllByRecipe_Id(recipeId);
     }
+
+    @Override
+    public void deleteByRecipeId(Long recipeId) {
+        commentRepository.deleteByRecipe_Id(recipeId);
+    }
 }

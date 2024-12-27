@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface ICommentService {
     List<Comment> findAllByRecipeId(Long recipeId);
+
+    void deleteByRecipeId(Long recipeId);
 }

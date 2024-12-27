@@ -15,4 +15,6 @@ public interface RecipeHistoryRepository extends JpaRepository<RecipeHistory, Lo
     boolean existsByRecipeAndUser(Recipe recipe, User currentUser);
 
     void deleteByRecipeAndUser(Recipe recipe, User user);
+
+    void deleteByRecipe_Id(Long id);
 }

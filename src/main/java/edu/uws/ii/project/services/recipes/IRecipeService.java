@@ -16,7 +16,8 @@ public interface IRecipeService {
 
     Page<Recipe> getPage(Pageable pageable);
 
-    void deleteById(Long id);
+    @PreAuthorize("#recipe.user.username == authentication.name or hasRole('ADMIN')")
+    void delete(Recipe recipe);
 
     List<Recipe> findByCategory(String category);
 

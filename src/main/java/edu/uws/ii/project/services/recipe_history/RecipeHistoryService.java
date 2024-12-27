@@ -1,9 +1,9 @@
 package edu.uws.ii.project.services.recipe_history;
 
 import edu.uws.ii.project.Repositories.RecipeHistoryRepository;
+import edu.uws.ii.project.Repositories.RecipeRepository;
 import edu.uws.ii.project.domain.Recipe;
 import edu.uws.ii.project.domain.RecipeHistory;
-import edu.uws.ii.project.services.recipes.IRecipeService;
 import edu.uws.ii.project.services.user.IUserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +14,13 @@ public class RecipeHistoryService implements IRecipeHistoryService {
 
     private final RecipeHistoryRepository recipeHistoryRepository;
     private final IUserService userService;
-    private final IRecipeService recipeService;
+    private final RecipeRepository recipeRepository;
 
     @Autowired
-    public RecipeHistoryService(RecipeHistoryRepository recipeHistoryRepository, IUserService userService, IRecipeService recipeService) {
+    public RecipeHistoryService(RecipeHistoryRepository recipeHistoryRepository, IUserService userService, RecipeRepository recipeRepository) {
         this.recipeHistoryRepository = recipeHistoryRepository;
         this.userService = userService;
-        this.recipeService = recipeService;
+        this.recipeRepository = recipeRepository;
     }
 
     @Override
@@ -36,7 +36,7 @@ public class RecipeHistoryService implements IRecipeHistoryService {
     @Override
     public void add(Long recipeId) {
         var user = userService.getCurrentUser();
-        var recipe = recipeService.findById(recipeId);
+        var recipe = recipeRepository.findById(recipeId);
         RecipeHistory recipeHistory = new RecipeHistory(user, recipe.get());
         recipeHistoryRepository.save(recipeHistory);
     }
@@ -45,7 +45,12 @@ public class RecipeHistoryService implements IRecipeHistoryService {
     @Transactional
     public void delete(Long recipeId) {
         var user = userService.getCurrentUser();
-        var recipe = recipeService.findById(recipeId);
+        var recipe = recipeRepository.findById(recipeId);
         recipeHistoryRepository.deleteByRecipeAndUser(recipe.get(), user);
+    }
+
+    @Override
+    public void deleteByRecipeId(Long id) {
+        recipeHistoryRepository.deleteByRecipe_Id(id);
     }
 }

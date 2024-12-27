@@ -10,4 +10,6 @@ public interface IRecipeHistoryService {
     void add(Long recipeId);
 
     void delete(Long recipeId);
+
+    void deleteByRecipeId(Long id);
 }

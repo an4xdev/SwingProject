@@ -4,5 +4,18 @@
     </div>
     <h3 th:text="${recipe.name}"></h3>
     <p th:text="${recipe.description}"></p>
-    <a class="view-recipe-btn" th:href="@{/recipes/{id}(id=${recipe.id})}">View Recipe</a>
+    <div class="dflex" style="justify-content: space-between">
+        <div>
+            <a class="view-recipe-btn" th:href="@{/recipes/{id}(id=${recipe.id})}">View Recipe</a>
+        </div>
+        <div th:if="${#authentication.name == recipe.user.username or #authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+            <a class="view-recipe-btn" th:href="@{/recipes/form/{id}(id=${recipe.id})}">Edit recipe</a>
+        </div>
+        <div th:if="${#authentication.name == recipe.user.username or #authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+            <form th:action="@{/recipes/{id}(id=${recipe.id})}" th:method="DELETE" style="margin-top: -10px">
+                <input type="submit" class="view-recipe-btn" value="Delete recipe" style="font-size: 1rem">
+            </form>
+        </div>
+    </div>
+
 </div>

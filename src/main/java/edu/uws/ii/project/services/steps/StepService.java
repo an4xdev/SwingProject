@@ -26,4 +26,9 @@ public class StepService implements IStepService {
     public void saveAll(@Size List<Step> steps) {
         stepRepository.saveAll(steps);
     }
+
+    @Override
+    public void delete(Step step) {
+        stepRepository.delete(step);
+    }
 }

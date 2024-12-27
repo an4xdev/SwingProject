@@ -79,8 +79,6 @@ public class RecipesController {
         var recipe = recipeService.findById(id).orElseThrow();
         var favourites = favouriteService.getFavouriteCountByRecipe(recipe);
         var done = recipeHistoryService.getDoneCountByRecipe(recipe);
-        var ingredients = ingredientsService.findAllByRecipe(recipe);
-        var steps = stepService.findAllByRecipeId(id);
         var comments = commentService.findAllByRecipeId(id);
         var rating = ratingService.calculateRatingByRecipe(recipe);
 
@@ -93,8 +91,6 @@ public class RecipesController {
         model.addAttribute("recipe", recipe);
         model.addAttribute("favourites", favourites);
         model.addAttribute("done", done);
-        model.addAttribute("ingredients", ingredients);
-        model.addAttribute("steps", steps);
         model.addAttribute("comments", comments);
         model.addAttribute("rating", rating);
 
@@ -130,17 +126,30 @@ public class RecipesController {
         return eventService.findAll().stream().map(Event::getId).toList();
     }
 
-    @GetMapping("/form")
-    public String addRecipeShowForm(Model model, @RequestParam(required = false) Long id) {
+    @GetMapping({"/form", "/form/{id}"})
+    public String addRecipeShowForm(Model model, @PathVariable(required = false) Long id) {
         FormDTO recipeForm = new FormDTO(-1L, "");
 
         if (id != null) {
             var recipe = recipeService.findById(id).orElseThrow();
             var steps = stepService.findAllByRecipeId(id);
             recipeForm = new FormDTO(recipe, steps);
+            model.addAttribute("recipe", recipe);
+        }
+        else {
+            model.addAttribute("recipe", new Recipe());
         }
 
         model.addAttribute("recipeForm", recipeForm);
+
+        model.addAttribute("headerTitle", id == null ? "Add recipe" : "Edit recipe");
+
+        model.addAttribute("buttonTitle", id == null ? "Add recipe" : "Edit recipe");
+
+        model.addAttribute("editing", id != null);
+
+        model.addAttribute("httpMethod", id == null ? "POST" : "PUT");
+
         return "recipe_form";
     }
 
@@ -232,8 +241,9 @@ public class RecipesController {
 
     @DeleteMapping("/{id}")
     public String deleteRecipe(@PathVariable Long id) {
-        recipeService.deleteById(id);
-        return "redirect:back";
+        var recipe = recipeService.findById(id).orElseThrow();
+        recipeService.delete(recipe);
+        return "redirect:/";
     }
 
 }

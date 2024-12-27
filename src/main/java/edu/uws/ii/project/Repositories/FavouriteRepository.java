@@ -15,4 +15,6 @@ public interface FavouriteRepository extends JpaRepository<Favourite, Long> {
     boolean existsByRecipeAndUser(Recipe recipe, User currentUser);
 
     void deleteByRecipeAndUser(Recipe recipe, User user);
+
+    void deleteByRecipe_id(Long recipeId);
 }

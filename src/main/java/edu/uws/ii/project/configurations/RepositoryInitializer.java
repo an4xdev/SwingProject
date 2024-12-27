@@ -174,6 +174,7 @@ public class RepositoryInitializer {
 
             if (commentRepository.count() == 0) {
                 commentRepository.saveAll(List.of(comment1, comment2, comment3, comment4, comment5, comment6, comment7, comment8, comment9));
+                recipeRepository.saveAll(List.of(pancakes, spaghettiCarbonara, pomodoroSoup, hawaiianPizza, bar));
             }
 
             // Initialize favourites

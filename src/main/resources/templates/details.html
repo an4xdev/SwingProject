@@ -33,13 +33,13 @@
             <section class="recipe-info">
                 <header><h3>Ingredients</h3></header>
                 <ul>
-                    <li th:each="ing: ${ingredients}" th:text="${ing.name}"></li>
+                    <li th:each="ing: ${recipe.ingredients}" th:text="${ing.name}"></li>
                 </ul>
             </section>
             <section class="recipe-info">
                 <header><h3>Instructions</h3></header>
                 <ol>
-                    <li th:each="step: ${steps}" th:text="${step.description}"></li>
+                    <li th:each="step: ${recipe.steps}" th:text="${step.description}"></li>
                 </ol>
             </section>
         </main>

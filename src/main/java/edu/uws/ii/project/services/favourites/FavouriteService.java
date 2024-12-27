@@ -1,9 +1,9 @@
 package edu.uws.ii.project.services.favourites;
 
 import edu.uws.ii.project.Repositories.FavouriteRepository;
+import edu.uws.ii.project.Repositories.RecipeRepository;
 import edu.uws.ii.project.domain.Favourite;
 import edu.uws.ii.project.domain.Recipe;
-import edu.uws.ii.project.services.recipes.IRecipeService;
 import edu.uws.ii.project.services.user.IUserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +14,13 @@ public class FavouriteService implements IFavouriteService {
 
     private final FavouriteRepository favouriteRepository;
     private final IUserService userService;
-    private final IRecipeService recipeService;
+    private final RecipeRepository recipeRepository;
 
     @Autowired
-    public FavouriteService(FavouriteRepository favouriteRepository, IUserService userService, IRecipeService recipeService) {
+    public FavouriteService(FavouriteRepository favouriteRepository, IUserService userService,  RecipeRepository recipeRepository) {
         this.favouriteRepository = favouriteRepository;
         this.userService = userService;
-        this.recipeService = recipeService;
+        this.recipeRepository = recipeRepository;
     }
 
     @Override
@@ -36,7 +36,7 @@ public class FavouriteService implements IFavouriteService {
     @Override
     public void add(Long recipeId) {
         var user = userService.getCurrentUser();
-        var recipe = recipeService.findById(recipeId);
+        var recipe = recipeRepository.findById(recipeId);
         Favourite favourite = new Favourite(user, recipe.get());
         favouriteRepository.save(favourite);
     }
@@ -45,7 +45,17 @@ public class FavouriteService implements IFavouriteService {
     @Transactional
     public void remove(Long recipeId) {
         var user = userService.getCurrentUser();
-        var recipe = recipeService.findById(recipeId);
+        var recipe = recipeRepository.findById(recipeId);
         favouriteRepository.deleteByRecipeAndUser(recipe.get(), user);
+    }
+
+    @Override
+    public void delete(Favourite favourite) {
+        favouriteRepository.delete(favourite);
+    }
+
+    @Override
+    public void deleteByRecipeId(Long recipeId) {
+        favouriteRepository.deleteByRecipe_id(recipeId);
     }
 }

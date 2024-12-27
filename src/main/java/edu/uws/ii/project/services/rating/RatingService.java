@@ -1,9 +1,9 @@
 package edu.uws.ii.project.services.rating;
 
 import edu.uws.ii.project.Repositories.RatingRepository;
+import edu.uws.ii.project.Repositories.RecipeRepository;
 import edu.uws.ii.project.domain.Rating;
 import edu.uws.ii.project.domain.Recipe;
-import edu.uws.ii.project.services.recipes.IRecipeService;
 import edu.uws.ii.project.services.user.IUserService;
 import org.springframework.stereotype.Service;
 
@@ -11,12 +11,12 @@ import org.springframework.stereotype.Service;
 public class RatingService implements IRatingService {
 
     private final RatingRepository ratingRepository;
-    private final IRecipeService recipeService;
+    private final RecipeRepository recipeRepository;
     private final IUserService userService;
 
-    public RatingService(RatingRepository ratingRepository, IRecipeService recipeService, IUserService userService) {
+    public RatingService(RatingRepository ratingRepository, RecipeRepository recipeRepository, IUserService userService) {
         this.ratingRepository = ratingRepository;
-        this.recipeService = recipeService;
+        this.recipeRepository = recipeRepository;
         this.userService = userService;
     }
 
@@ -35,7 +35,7 @@ public class RatingService implements IRatingService {
     @Override
     public void rate(Long recipeId, Float rating) {
         var user = userService.getCurrentUser();
-        var recipe = recipeService.findById(recipeId);
+        var recipe = recipeRepository.findById(recipeId);
         var existingRating = ratingRepository.findByRecipeAndUser(recipe.get(), user);
         if(existingRating.isPresent()) {
             existingRating.get().setRating(rating);
@@ -50,5 +50,15 @@ public class RatingService implements IRatingService {
     public Float getRatingByRecipe(Recipe recipe) {
         var rating = ratingRepository.findByRecipeAndUser(recipe, userService.getCurrentUser());
         return rating.map(Rating::getRating).orElse(0.0F);
+    }
+
+    @Override
+    public void delete(Rating rating) {
+        ratingRepository.delete(rating);
+    }
+
+    @Override
+    public void deleteByRecipeId(Long id) {
+        ratingRepository.deleteByRecipe_id(id);
     }
 }

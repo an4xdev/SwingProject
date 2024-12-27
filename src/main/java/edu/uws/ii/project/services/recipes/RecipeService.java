@@ -8,12 +8,17 @@ import edu.uws.ii.project.domain.*;
 import edu.uws.ii.project.dtos.FormDTO;
 import edu.uws.ii.project.dtos.SearchFormDTO;
 import edu.uws.ii.project.services.categories.ICategoryService;
+import edu.uws.ii.project.services.comments.ICommentService;
 import edu.uws.ii.project.services.difficulties.IDifficultyService;
 import edu.uws.ii.project.services.events.IEventService;
+import edu.uws.ii.project.services.favourites.FavouriteService;
 import edu.uws.ii.project.services.ingredients.IIngredientsService;
+import edu.uws.ii.project.services.rating.IRatingService;
+import edu.uws.ii.project.services.recipe_history.IRecipeHistoryService;
 import edu.uws.ii.project.services.steps.IStepService;
 import edu.uws.ii.project.services.user.IUserService;
 import edu.uws.ii.project.specifications.RecipeSearchSpecification;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -41,9 +46,13 @@ public class RecipeService implements IRecipeService {
     private final IDifficultyService difficultyService;
     private final IStepService stepService;
     private final IUserService userService;
+    private final ICommentService commentService;
+    private final FavouriteService favouriteService;
+    private final IRecipeHistoryService recipeHistoryService;
+    private final IRatingService ratingService;
 
     @Autowired
-    public RecipeService(RecipeRepository recipeRepository, CategoryRepository categoryRepository, DifficultyRepository difficultyRepository, EventRepository eventRepository, IIngredientsService ingredientsService, ICategoryService categoryService, IEventService eventService, IDifficultyService difficultyService, IStepService stepService, IUserService userService) {
+    public RecipeService(RecipeRepository recipeRepository, CategoryRepository categoryRepository, DifficultyRepository difficultyRepository, EventRepository eventRepository, IIngredientsService ingredientsService, ICategoryService categoryService, IEventService eventService, IDifficultyService difficultyService, IStepService stepService, IUserService userService, ICommentService commentService, FavouriteService favouriteService, IRecipeHistoryService recipeHistoryService, IRatingService ratingService) {
         this.recipeRepository = recipeRepository;
         this.categoryRepository = categoryRepository;
         this.difficultyRepository = difficultyRepository;
@@ -54,6 +63,10 @@ public class RecipeService implements IRecipeService {
         this.difficultyService = difficultyService;
         this.stepService = stepService;
         this.userService = userService;
+        this.commentService = commentService;
+        this.favouriteService = favouriteService;
+        this.recipeHistoryService = recipeHistoryService;
+        this.ratingService = ratingService;
     }
 
     @Override
@@ -69,8 +82,30 @@ public class RecipeService implements IRecipeService {
     }
 
     @Override
-    public void deleteById(Long id) {
-        recipeRepository.deleteById(id);
+    @Transactional
+    public void delete(Recipe recipe) {
+
+        commentService.deleteByRecipeId(recipe.getId());
+        recipe.getComments().clear();
+
+        for (Step step : recipe.getSteps()) {
+            stepService.delete(step);
+        }
+        recipe.getSteps().clear();
+
+        recipeHistoryService.deleteByRecipeId(recipe.getId());
+        recipe.getRecipeHistories().clear();
+
+        favouriteService.deleteByRecipeId(recipe.getId());
+        recipe.getFavourite().clear();
+
+        ratingService.deleteByRecipeId(recipe.getId());
+        recipe.getRatings().clear();
+
+
+        recipeRepository.save(recipe);
+
+        recipeRepository.delete(recipe);
     }
 
     @Override
@@ -216,6 +251,7 @@ public class RecipeService implements IRecipeService {
         stepService.saveAll(stepsToRecipe);
 
         // Save the recipe again with steps
+
         recipeRepository.save(recipe);
     }
 
@@ -239,7 +275,7 @@ public class RecipeService implements IRecipeService {
 
         ArrayList<Step> stepsToRecipe = getSteps(recipeForm);
 
-        // update recipe
+        // update recipe fields
 
         recipe.setName(recipeForm.getName());
         recipe.setDescription(recipeForm.getDescription());
@@ -251,7 +287,7 @@ public class RecipeService implements IRecipeService {
         recipe.setDifficulty(difficulty);
         recipe.setEvents(new HashSet<>(events));
 
-        // save recipe
+        // update recipe
 
         recipeRepository.save(recipe);
 
@@ -263,7 +299,8 @@ public class RecipeService implements IRecipeService {
 
         stepService.saveAll(stepsToRecipe);
 
-        // Save the recipe again with steps
+        // update the recipe again with steps
+
         recipeRepository.save(recipe);
     }
 }
