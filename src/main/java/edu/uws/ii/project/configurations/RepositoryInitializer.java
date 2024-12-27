@@ -123,27 +123,39 @@ public class RepositoryInitializer {
                 ingredientRepository.saveAll(List.of(flour, sugar, eggs, butter, milk, salt, pasta, bread, chicken, beef, potatoes, salami, pineapple, tomatoSauce, mozzarella, strawberries, ham, cheese));
             }
 
+            // Initialize times
+
+            Time time1 = new Time(20, 30, 50);
+            Time time2 = new Time(30, 60, 90);
+            Time time3 = new Time(30, 60, 90);
+            Time time4 = new Time(10, 20, 30);
+            Time time5 = new Time(15, 45, 60);
+            Time time6 = new Time(5, 55, 60);
+            Time time7 = new Time(60, 60, 120);
+            Time time8 = new Time(10, 25, 35);
+            Time time9 = new Time(25, 35, 60);
+
             // Initialize recipes
 
             // photo `chmura.jpg` got from: https://picsum.photos/ (MIT License)
 
-            Recipe pancakes = new Recipe("Pancakes", "Pancakes are a breakfast staple and are loved by many. They are easy to make and can be customized to your liking.", "/user_images/chmura.jpg", 20, false, LocalDateTime.now(), user1, new HashSet<>(List.of(sugar, milk, flour, eggs)), breakfast, easy, new HashSet<>(List.of(casual)));
+            Recipe pancakes = new Recipe("Pancakes", "Pancakes are a breakfast staple and are loved by many. They are easy to make and can be customized to your liking.", "/user_images/chmura.jpg", time1, false, LocalDateTime.now(), user1, new HashSet<>(List.of(sugar, milk, flour, eggs)), breakfast, easy, new HashSet<>(List.of(casual)));
 
-            Recipe strawberryCake = new Recipe("Strawberry Cake", "Strawberry Cake is great cake for special events", "/user_images/chmura.jpg", 30, true, LocalDateTime.now(), user1 ,new HashSet<>(List.of(sugar, milk, flour,eggs, strawberries)), dessert, medium, new HashSet<>(List.of(birthday, anniversary, christmas)));
+            Recipe strawberryCake = new Recipe("Strawberry Cake", "Strawberry Cake is great cake for special events", "/user_images/chmura.jpg", time2, true, LocalDateTime.now(), user1 ,new HashSet<>(List.of(sugar, milk, flour,eggs, strawberries)), dessert, medium, new HashSet<>(List.of(birthday, anniversary, christmas)));
 
-            Recipe spaghettiCarbonara = new Recipe("Spaghetti carbonara", "Great italian dish for dinner.", "/user_images/chmura.jpg", 30, false, LocalDateTime.now(), user1, new HashSet<>(List.of(pasta, milk, beef)), dinner, hard, new HashSet<>(List.of(casual)));
+            Recipe spaghettiCarbonara = new Recipe("Spaghetti carbonara", "Great italian dish for dinner.", "/user_images/chmura.jpg", time3, false, LocalDateTime.now(), user1, new HashSet<>(List.of(pasta, milk, beef)), dinner, hard, new HashSet<>(List.of(casual)));
 
-            Recipe sandwich = new Recipe("Sandwich", "Simple sandwich for quick breakfast.", "/user_images/chmura.jpg", 30, false, LocalDateTime.now(), user1, new HashSet<>(List.of(bread, cheese, ham)), breakfast, easy, new HashSet<>(List.of(casual)));
+            Recipe sandwich = new Recipe("Sandwich", "Simple sandwich for quick breakfast.", "/user_images/chmura.jpg", time4, false, LocalDateTime.now(), user1, new HashSet<>(List.of(bread, cheese, ham)), breakfast, easy, new HashSet<>(List.of(casual)));
 
-            Recipe pomodoroSoup = new Recipe("Pomodoro Soup", "Simple pomodoro soup from broth from yesterday", "/user_images/chmura.jpg", 30, false, LocalDateTime.now(), user2 ,new HashSet<>(List.of(tomatoSauce, pasta)), dinner, medium, new HashSet<>(List.of(casual)));
+            Recipe pomodoroSoup = new Recipe("Pomodoro Soup", "Simple pomodoro soup from broth from yesterday", "/user_images/chmura.jpg", time5, false, LocalDateTime.now(), user2 ,new HashSet<>(List.of(tomatoSauce, pasta)), dinner, medium, new HashSet<>(List.of(casual)));
 
-            Recipe beefWithPotatoes = new Recipe("Beef with potatoes", "Classic dinner for casual and specials events.", "/user_images/chmura.jpg", 30, false, LocalDateTime.now(), user2, new HashSet<>(List.of(potatoes, beef)), dinner, hard, new HashSet<>(List.of(casual, birthday, anniversary)));
+            Recipe beefWithPotatoes = new Recipe("Beef with potatoes", "Classic dinner for casual and specials events.", "/user_images/chmura.jpg", time6, false, LocalDateTime.now(), user2, new HashSet<>(List.of(potatoes, beef)), dinner, hard, new HashSet<>(List.of(casual, birthday, anniversary)));
 
-            Recipe hawaiianPizza = new Recipe("Hawaiian pizza", "Only true pizza, change my mind.", "/user_images/chmura.jpg", 30, true, LocalDateTime.now(), user3 ,new HashSet<>(List.of(flour, eggs, pineapple, ham)), dinner, medium, new HashSet<>(List.of(casual, birthday)));
+            Recipe hawaiianPizza = new Recipe("Hawaiian pizza", "Only true pizza, change my mind.", "/user_images/chmura.jpg", time7, true, LocalDateTime.now(), user3 ,new HashSet<>(List.of(flour, eggs, pineapple, ham)), dinner, medium, new HashSet<>(List.of(casual, birthday)));
 
-            Recipe pizzaSalami = new Recipe("Pizza salami", "Classical pizza great for all events.", "/user_images/chmura.jpg", 30, true, LocalDateTime.now(), user3, new HashSet<>(List.of(flour, eggs, salami, tomatoSauce)), dinner, hard, new HashSet<>(List.of(casual, birthday, anniversary)));
+            Recipe pizzaSalami = new Recipe("Pizza salami", "Classical pizza great for all events.", "/user_images/chmura.jpg", time8, true, LocalDateTime.now(), user3, new HashSet<>(List.of(flour, eggs, salami, tomatoSauce)), dinner, hard, new HashSet<>(List.of(casual, birthday, anniversary)));
 
-            Recipe bar = new Recipe("Bar", "Simple bar for quick snack.", "/user_images/chmura.jpg", 30, false, LocalDateTime.now(), user3 ,new HashSet<>(List.of(flour, eggs, sugar, butter)), snack, easy, new HashSet<>(List.of(casual)));
+            Recipe bar = new Recipe("Bar", "Simple bar for quick snack.", "/user_images/chmura.jpg", time9, false, LocalDateTime.now(), user3 ,new HashSet<>(List.of(flour, eggs, sugar, butter)), snack, easy, new HashSet<>(List.of(casual)));
 
             if (recipeRepository.count() == 0) {
                 recipeRepository.saveAll(List.of(pancakes, strawberryCake, spaghettiCarbonara, sandwich, pomodoroSoup, beefWithPotatoes, hawaiianPizza, pizzaSalami, bar));

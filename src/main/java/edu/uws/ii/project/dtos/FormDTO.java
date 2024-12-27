@@ -1,7 +1,6 @@
 package edu.uws.ii.project.dtos;
 
-import edu.uws.ii.project.domain.Ingredient;
-import edu.uws.ii.project.domain.Step;
+import edu.uws.ii.project.domain.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -17,7 +16,7 @@ import java.util.List;
 @Setter
 @Getter
 @NoArgsConstructor
-public class AddFormDTO {
+public class FormDTO {
     @NotNull
     private Long id;
 
@@ -51,15 +50,29 @@ public class AddFormDTO {
     @Min(value = 1)
     private Long categoryId;
 
-    @Min(value = 1)
-    private Integer time;
+    private Time time;
 
-    public AddFormDTO(Long id, String name) {
+    public FormDTO(Long id, String name) {
         this.id = id;
         this.name = name;
         this.ingredients = new ArrayList<>();
         this.ingredientsAdded = new ArrayList<>();
         this.steps = new ArrayList<>();
         this.eventIds = new ArrayList<>();
+        time = new Time();
+    }
+
+    public FormDTO(Recipe recipe, List<Step> steps) {
+        this.id = recipe.getId();
+        this.name = recipe.getName();
+        this.description = recipe.getDescription();
+        this.time = recipe.getTime();
+        this.requireOven = recipe.getRequireOven();
+        this.categoryId = recipe.getCategory().getId();
+        this.difficultyId = recipe.getDifficulty().getId();
+        this.eventIds = recipe.getEvents().stream().map(Event::getId).toList();
+        this.ingredients = new ArrayList<>(recipe.getIngredients());
+        this.ingredientsAdded = new ArrayList<>();
+        this.steps = new ArrayList<>(steps);
     }
 }

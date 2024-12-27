@@ -31,7 +31,8 @@ public class Recipe {
     private String photoPath;
 
     @Column(nullable = false)
-    private Integer cookingTime;
+    private Time time;
+
     private Boolean requireOven;
     private LocalDateTime createdAt;
 
@@ -78,12 +79,12 @@ public class Recipe {
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Rating> ratings;
 
-    public Recipe(String name, String description, String photoPath, Integer cookingTime,Boolean requireOven, LocalDateTime createdAt, User user, Set<Ingredient> ingredients, Category category, Difficulty difficulty, Set<Event> events) {
+    public Recipe(String name, String description, String photoPath, Time time, Boolean requireOven, LocalDateTime createdAt, User user, Set<Ingredient> ingredients, Category category, Difficulty difficulty, Set<Event> events) {
         this.id = null;
         this.name = name;
         this.description = description;
         this.photoPath = photoPath;
-        this.cookingTime = cookingTime;
+        this.time = time;
         this.requireOven = requireOven;
         this.createdAt = createdAt;
         this.user = user;

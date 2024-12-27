@@ -4,9 +4,17 @@ import edu.uws.ii.project.Repositories.CategoryRepository;
 import edu.uws.ii.project.Repositories.DifficultyRepository;
 import edu.uws.ii.project.Repositories.EventRepository;
 import edu.uws.ii.project.Repositories.RecipeRepository;
-import edu.uws.ii.project.domain.Recipe;
+import edu.uws.ii.project.domain.*;
+import edu.uws.ii.project.dtos.FormDTO;
 import edu.uws.ii.project.dtos.SearchFormDTO;
+import edu.uws.ii.project.services.categories.ICategoryService;
+import edu.uws.ii.project.services.difficulties.IDifficultyService;
+import edu.uws.ii.project.services.events.IEventService;
+import edu.uws.ii.project.services.ingredients.IIngredientsService;
+import edu.uws.ii.project.services.steps.IStepService;
+import edu.uws.ii.project.services.user.IUserService;
 import edu.uws.ii.project.specifications.RecipeSearchSpecification;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +22,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -25,12 +35,25 @@ public class RecipeService implements IRecipeService {
     private final CategoryRepository categoryRepository;
     private final DifficultyRepository difficultyRepository;
     private final EventRepository eventRepository;
+    private final IIngredientsService ingredientsService;
+    private final ICategoryService categoryService;
+    private final IEventService eventService;
+    private final IDifficultyService difficultyService;
+    private final IStepService stepService;
+    private final IUserService userService;
 
-    public RecipeService(RecipeRepository recipeRepository, CategoryRepository categoryRepository, DifficultyRepository difficultyRepository, EventRepository eventRepository) {
+    @Autowired
+    public RecipeService(RecipeRepository recipeRepository, CategoryRepository categoryRepository, DifficultyRepository difficultyRepository, EventRepository eventRepository, IIngredientsService ingredientsService, ICategoryService categoryService, IEventService eventService, IDifficultyService difficultyService, IStepService stepService, IUserService userService) {
         this.recipeRepository = recipeRepository;
         this.categoryRepository = categoryRepository;
         this.difficultyRepository = difficultyRepository;
         this.eventRepository = eventRepository;
+        this.ingredientsService = ingredientsService;
+        this.categoryService = categoryService;
+        this.eventService = eventService;
+        this.difficultyService = difficultyService;
+        this.stepService = stepService;
+        this.userService = userService;
     }
 
     @Override
@@ -111,8 +134,136 @@ public class RecipeService implements IRecipeService {
         return recipeRepository.findAll(spec, sort).stream().distinct().collect(Collectors.toList());
     }
 
+    private ArrayList<Ingredient> getIngredients(FormDTO recipeForm) {
+        ArrayList<Ingredient> ingredientsToRecipe = new ArrayList<>();
+
+        if (recipeForm.getIngredientsAdded() != null) {
+            if (!recipeForm.getIngredientsAdded().isEmpty()) {
+                for (Ingredient ingredient : recipeForm.getIngredientsAdded()) {
+                    // skip empty ingredients
+                    // another validation after js validation
+                    if (ingredient.getName().isBlank()) {
+                        continue;
+                    }
+                    ingredientsToRecipe.add(ingredientsService.save(ingredient));
+                }
+            }
+        }
+
+        // add existing ingredients to recipe
+
+        if (recipeForm.getIngredients() != null) {
+            ingredientsToRecipe.addAll(recipeForm.getIngredients());
+        }
+
+        return ingredientsToRecipe;
+    }
+
+    private ArrayList<Step> getSteps(FormDTO recipeForm) {
+        ArrayList<Step> stepsToRecipe = new ArrayList<>();
+
+        if (recipeForm.getSteps() != null) {
+            for (var step : recipeForm.getSteps()) {
+                if (step.getDescription().isBlank()) {
+                    continue;
+                }
+                stepsToRecipe.add(step);
+            }
+        }
+
+        return stepsToRecipe;
+    }
+
     @Override
-    public void save(Recipe recipe) {
+    public void save(FormDTO recipeForm, String photoPath) {
+        ArrayList<Ingredient> ingredientsToRecipe = getIngredients(recipeForm);
+
+        // get category by id
+
+        Category category = categoryService.findById(recipeForm.getCategoryId());
+
+        // get difficulty by id
+
+        Difficulty difficulty = difficultyService.findById(recipeForm.getDifficultyId());
+
+        // get events by ids
+
+        List<Event> events = eventService.findAllByIds(recipeForm.getEventIds());
+
+        // get current user
+
+        User user = userService.getCurrentUser();
+
+        // validate steps
+
+        ArrayList<Step> stepsToRecipe = getSteps(recipeForm);
+
+        // create new recipe
+
+        Recipe recipe = new Recipe(recipeForm.getName(), recipeForm.getDescription(), photoPath, recipeForm.getTime(), recipeForm.getRequireOven(), LocalDateTime.now(), user, new HashSet<>(ingredientsToRecipe), category, difficulty, new HashSet<>(events));
+        recipe.setId(null);
+
+        // save recipe
+
+        recipeRepository.save(recipe);
+
+        // save steps
+
+        for (var step : stepsToRecipe) {
+            step.setRecipe(recipe);
+        }
+
+        stepService.saveAll(stepsToRecipe);
+
+        // Save the recipe again with steps
+        recipeRepository.save(recipe);
+    }
+
+    @Override
+    public void update(FormDTO recipeForm, Recipe recipe, String photoPath) {
+        ArrayList<Ingredient> ingredientsToRecipe = getIngredients(recipeForm);
+
+        // get category by id
+
+        Category category = categoryService.findById(recipeForm.getCategoryId());
+
+        // get difficulty by id
+
+        Difficulty difficulty = difficultyService.findById(recipeForm.getDifficultyId());
+
+        // get events by ids
+
+        List<Event> events = eventService.findAllByIds(recipeForm.getEventIds());
+
+        // validate steps
+
+        ArrayList<Step> stepsToRecipe = getSteps(recipeForm);
+
+        // update recipe
+
+        recipe.setName(recipeForm.getName());
+        recipe.setDescription(recipeForm.getDescription());
+        recipe.setPhotoPath(photoPath);
+        recipe.setTime(recipeForm.getTime());
+        recipe.setRequireOven(recipeForm.getRequireOven());
+        recipe.setIngredients(new HashSet<>(ingredientsToRecipe));
+        recipe.setCategory(category);
+        recipe.setDifficulty(difficulty);
+        recipe.setEvents(new HashSet<>(events));
+
+        // save recipe
+
+        recipeRepository.save(recipe);
+
+        // save steps
+
+        for (var step : stepsToRecipe) {
+            step.setRecipe(recipe);
+        }
+
+        stepService.saveAll(stepsToRecipe);
+
+        // Save the recipe again with steps
         recipeRepository.save(recipe);
     }
 }

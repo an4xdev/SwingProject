@@ -1,8 +1,9 @@
 package edu.uws.ii.project.controllers;
 
 import edu.uws.ii.project.domain.*;
-import edu.uws.ii.project.dtos.AddFormDTO;
+import edu.uws.ii.project.dtos.FormDTO;
 import edu.uws.ii.project.dtos.RateRecipeDTO;
+import edu.uws.ii.project.editors.CustomTimeEditor;
 import edu.uws.ii.project.services.categories.ICategoryService;
 import edu.uws.ii.project.services.comments.ICommentService;
 import edu.uws.ii.project.services.difficulties.IDifficultyService;
@@ -13,7 +14,7 @@ import edu.uws.ii.project.services.rating.IRatingService;
 import edu.uws.ii.project.services.recipe_history.IRecipeHistoryService;
 import edu.uws.ii.project.services.recipes.IRecipeService;
 import edu.uws.ii.project.services.steps.IStepService;
-import edu.uws.ii.project.services.user.IUserService;
+import edu.uws.ii.project.validators.FormDTOValidator;
 import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
@@ -23,6 +24,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,18 +32,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 @Log4j2
 @Controller
 @RequestMapping("/recipes")
 public class RecipesController {
-
-    private final String UPLOAD_DIR = "src/main/resources/static/user_images/";
-    private final String PATH_TO_IMAGES = "/user_images/";
 
     private final IRecipeService recipeService;
     private final ICommentService commentService;
@@ -52,11 +48,11 @@ public class RecipesController {
     private final IRecipeHistoryService recipeHistoryService;
     private final IEventService eventService;
     private final ICategoryService categoryService;
-    private final IUserService userService;
     private final IRatingService ratingService;
+    private final FormDTOValidator formDTOValidator;
 
     @Autowired
-    public RecipesController(IRecipeService recipeService, ICommentService commentService, IIngredientsService ingredientsService, IStepService stepService, IDifficultyService difficultyService, IFavouriteService favouriteService, IRecipeHistoryService recipeHistoryService, IEventService eventService, ICategoryService categoryService, IUserService userService, IRatingService ratingService) {
+    public RecipesController(IRecipeService recipeService, ICommentService commentService, IIngredientsService ingredientsService, IStepService stepService, IDifficultyService difficultyService, IFavouriteService favouriteService, IRecipeHistoryService recipeHistoryService, IEventService eventService, ICategoryService categoryService, IRatingService ratingService, FormDTOValidator formDTOValidator) {
         this.recipeService = recipeService;
         this.ingredientsService = ingredientsService;
         this.stepService = stepService;
@@ -66,8 +62,8 @@ public class RecipesController {
         this.recipeHistoryService = recipeHistoryService;
         this.eventService = eventService;
         this.categoryService = categoryService;
-        this.userService = userService;
         this.ratingService = ratingService;
+        this.formDTOValidator = formDTOValidator;
     }
 
     @GetMapping("/page")
@@ -134,122 +130,77 @@ public class RecipesController {
         return eventService.findAll().stream().map(Event::getId).toList();
     }
 
-    // TODO: add optional parameter for editing recipe?
     @GetMapping("/form")
-    public String addRecipeShowForm(Model model) {
-        AddFormDTO recipeForm = new AddFormDTO(-1L, "");
+    public String addRecipeShowForm(Model model, @RequestParam(required = false) Long id) {
+        FormDTO recipeForm = new FormDTO(-1L, "");
+
+        if (id != null) {
+            var recipe = recipeService.findById(id).orElseThrow();
+            var steps = stepService.findAllByRecipeId(id);
+            recipeForm = new FormDTO(recipe, steps);
+        }
+
         model.addAttribute("recipeForm", recipeForm);
         return "recipe_form";
     }
 
-    @PostMapping("/form")
-    public String addRecipe(@Valid @ModelAttribute("recipeForm") AddFormDTO recipeForm, BindingResult bindingResult) {
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(Time.class, new CustomTimeEditor());
+    }
 
-        int existingIngredientsCount = recipeForm.getIngredients() == null ? 0 : recipeForm.getIngredients().size();
+    private String saveImage(MultipartFile file) {
+        if (file != null && !file.isEmpty()) {
+            try {
+                final String UPLOAD_DIR = "src/main/resources/static/user_images/";
+                Files.createDirectories(Paths.get(UPLOAD_DIR));
 
-        int newIngredientsCount = recipeForm.getIngredientsAdded() == null ? 0 : recipeForm.getIngredientsAdded().size();
+                Path filePath = Paths.get(UPLOAD_DIR + file.getOriginalFilename());
+                Files.write(filePath, file.getBytes());
 
-        if(existingIngredientsCount == 0 && newIngredientsCount == 0){
-            bindingResult.rejectValue("ingredients", "error.ingredients", "At least one ingredient is required.");
+                final String PATH_TO_IMAGES = "/user_images/";
+                return PATH_TO_IMAGES + file.getOriginalFilename();
+
+            } catch (IOException e) {
+                log.log(Level.ERROR, "Error while saving image", e);
+                throw new RuntimeException("Error while saving image");
+            }
         }
+        return null;
+    }
+
+    @PostMapping("/form")
+    public String addRecipe(@Valid @ModelAttribute("recipeForm") FormDTO recipeForm, BindingResult bindingResult) {
+
+        formDTOValidator.validateIngredients(recipeForm, bindingResult);
 
         if (bindingResult.hasErrors()) {
             return "recipe_form";
         }
 
-        String photoPath = null;
+        String photoPath = saveImage(recipeForm.getImage());
 
-        MultipartFile file = recipeForm.getImage();
+        recipeService.save(recipeForm, photoPath);
 
-        if (file != null && !file.isEmpty()) {
-            try {
-                Files.createDirectories(Paths.get(UPLOAD_DIR));
-
-                Path filePath = Paths.get(UPLOAD_DIR + file.getOriginalFilename());
-                Files.write(filePath, file.getBytes());
-
-                photoPath = PATH_TO_IMAGES + file.getOriginalFilename();
-
-            } catch (IOException e) {
-                log.log(Level.ERROR, "Error while saving image", e);
-                return "redirect:/add_recipe";
-            }
-        }
-
-        // save new ingredients added by user
-        ArrayList<Ingredient> ingredientsToRecipe = new ArrayList<>();
-
-        if (!recipeForm.getIngredientsAdded().isEmpty()) {
-            for (Ingredient ingredient : recipeForm.getIngredientsAdded()) {
-                // skip empty ingredients
-                // another validation after js validation
-                if(ingredient.getName().isBlank()){
-                    continue;
-                }
-                ingredientsToRecipe.add(ingredientsService.save(ingredient));
-            }
-        }
-
-        // add existing ingredients to recipe
-        ingredientsToRecipe.addAll(recipeForm.getIngredients());
-
-        // get category by id
-
-        Category category = categoryService.findById(recipeForm.getCategoryId());
-
-        // get difficulty by id
-
-        Difficulty difficulty = difficultyService.findById(recipeForm.getDifficultyId());
-
-        // get events by ids
-
-        List<Event> events = eventService.findAllByIds(recipeForm.getEventIds());
-
-        // get current user
-
-        User user = userService.getCurrentUser();
-
-        // create new recipe
-
-        Recipe recipe = new Recipe(recipeForm.getName(), recipeForm.getDescription(), photoPath, recipeForm.getTime(), recipeForm.getRequireOven(), LocalDateTime.now(), user, new HashSet<>(ingredientsToRecipe), category, difficulty, new HashSet<>(events));
-        recipe.setId(null);
-
-        // save recipe
-
-        recipeService.save(recipe);
-
-        // save steps
-
-        for (var step : recipeForm.getSteps()) {
-            step.setRecipe(recipe);
-        }
-
-        stepService.saveAll(recipeForm.getSteps());
-
-        // Save the recipe again with steps
-        recipeService.save(recipe);
-
-        return "redirect:/profile/";
+        return "redirect:/";
     }
 
     @PutMapping("/form")
-    public String updateRecipe(@ModelAttribute("recipeForm") AddFormDTO recipeForm) {
-        MultipartFile file = recipeForm.getImage();
+    public String updateRecipe(@ModelAttribute("recipeForm") FormDTO recipeForm, BindingResult bindingResult) {
 
-        if (file != null && !file.isEmpty()) {
-            try {
-                Files.createDirectories(Paths.get(UPLOAD_DIR));
+        formDTOValidator.validateIngredients(recipeForm, bindingResult);
 
-                Path filePath = Paths.get(UPLOAD_DIR + file.getOriginalFilename());
-                Files.write(filePath, file.getBytes());
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                return "redirect:/recipes/form";
-            }
+        if (bindingResult.hasErrors()) {
+            return "recipe_form";
         }
 
-        return "redirect:/recipes/form";
+        String photoPath = saveImage(recipeForm.getImage());
+
+        var recipe = recipeService.findById(recipeForm.getId()).orElseThrow();
+
+        recipeService.update(recipeForm, recipe, photoPath);
+
+        return "redirect:/";
     }
 
     @GetMapping("/category/{category}")
