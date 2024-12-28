@@ -272,5 +272,10 @@ public class RecipeService implements IRecipeService {
         }
         stepService.saveAll(stepsToRecipe);
     }
+
+    @Override
+    public List<Recipe> findByUser() {
+        return recipeRepository.findAllByUser(userService.getCurrentUser());
+    }
 }
 

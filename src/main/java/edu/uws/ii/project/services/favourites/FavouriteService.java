@@ -4,10 +4,14 @@ import edu.uws.ii.project.Repositories.FavouriteRepository;
 import edu.uws.ii.project.Repositories.RecipeRepository;
 import edu.uws.ii.project.domain.Favourite;
 import edu.uws.ii.project.domain.Recipe;
+import edu.uws.ii.project.dtos.FavouriteRecipeDTO;
 import edu.uws.ii.project.services.user.IUserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FavouriteService implements IFavouriteService {
@@ -57,5 +61,20 @@ public class FavouriteService implements IFavouriteService {
     @Override
     public void deleteByRecipeId(Long recipeId) {
         favouriteRepository.deleteByRecipe_id(recipeId);
+    }
+
+    @Override
+    public List<FavouriteRecipeDTO> getUserFavourites() {
+        var user = userService.getCurrentUser();
+        var favourites = favouriteRepository.findAllByUserId(user.getId());
+        return favourites.stream().map(favourite -> {
+            var recipe = favourite.getRecipe();
+            var dto = new FavouriteRecipeDTO();
+            dto.setRecipeId(recipe.getId());
+            dto.setRecipeName(recipe.getName());
+            dto.setRecipeDescription(recipe.getDescription());
+            dto.setRecipeImage(recipe.getPhotoPath());
+            return dto;
+        }).collect(Collectors.toList());
     }
 }

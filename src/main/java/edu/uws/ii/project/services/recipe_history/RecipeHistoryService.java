@@ -4,10 +4,14 @@ import edu.uws.ii.project.Repositories.RecipeHistoryRepository;
 import edu.uws.ii.project.Repositories.RecipeRepository;
 import edu.uws.ii.project.domain.Recipe;
 import edu.uws.ii.project.domain.RecipeHistory;
+import edu.uws.ii.project.dtos.HistoryRecipeDTO;
 import edu.uws.ii.project.services.user.IUserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RecipeHistoryService implements IRecipeHistoryService {
@@ -52,5 +56,21 @@ public class RecipeHistoryService implements IRecipeHistoryService {
     @Override
     public void deleteByRecipeId(Long id) {
         recipeHistoryRepository.deleteByRecipe_Id(id);
+    }
+
+    @Override
+    public List<HistoryRecipeDTO> getUserHistory() {
+        var user = userService.getCurrentUser();
+        var history = recipeHistoryRepository.findAllByUserId(user.getId());
+        return history.stream().map(h -> {
+            var recipe = h.getRecipe();
+            var dto = new HistoryRecipeDTO();
+            dto.setRecipeId(h.getId());
+            dto.setRecipeName(recipe.getName());
+            dto.setRecipeDescription(recipe.getDescription());
+            dto.setRecipeImage(recipe.getPhotoPath());
+            dto.setDate(h.getDate());
+            return dto;
+        }).collect(Collectors.toList());
     }
 }

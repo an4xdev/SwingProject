@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your favourite recipes - Online Recipe Book</title>
+  <link rel="stylesheet" href="/styles/styles.css">
+</head>
+<body>
+<div th:insert="~{fragments/header :: header}"></div>
+<div th:insert="~{fragments/nav :: div}"></div><main class="content">
+  <section>
+    <header>
+      <h2>Your favourite recipes </h2>
+    </header>
+    <div class="featured-recipes">
+      <div th:each="dto : ${favourites}" style="width: 33%">
+        <div class="recipe-card">
+          <div class="recipe-card-header">
+            <h3 th:text="${dto.recipeName}"></h3>
+          </div>
+          <div class="recipe-card-body">
+            <img th:src="${dto.recipeImage}" alt="recipe photo" width="200" height="200">
+            <p th:text="${dto.recipeDescription}"></p>
+          </div>
+          <div class="recipe-card-footer">
+            <form th:action="@{/favourites/remove}" method="post">
+              <input type="hidden" name="recipeId" th:value="${dto.recipeId}">
+              <button type="submit" class="done-btn-remove">Remove from favourites</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+</html>

@@ -31,4 +31,6 @@ public interface IRecipeService {
 
     @PreAuthorize("#recipe.user.username == authentication.name or hasRole('ADMIN')")
     void update(FormDTO recipeForm, Recipe recipe, String photoPath);
+
+    List<Recipe> findByUser();
 }

@@ -24,22 +24,23 @@
                 </div>
             </div>
             <div>
+<!--                TODO: add redirect on removing from favourites and history?-->
                 <h3>Check</h3>
                 <div class="dflex">
                     <div class="profile-check-card">
                         <h4>Your recipes</h4>
                         <p>Count: <span th:text="${userRecipesCount}"></span></p>
-                        <button class="view-recipe-btn">View</button>
+                        <a class="view-recipe-btn" th:href="@{/recipes/user}">View</a>
                     </div>
                     <div class="profile-check-card">
                         <h4>Your favorite recipes</h4>
                         <p>Count: <span th:text="${userFavouritesCount}"></span></p>
-                        <button class="view-recipe-btn">View</button>
+                        <a class="view-recipe-btn" th:href="@{/favourites/user}">View</a>
                     </div>
                     <div class="profile-check-card">
                         <h4>What recipes you made</h4>
                         <p>Count: <span th:text="${userDoneCount}"></span></p>
-                        <button class="view-recipe-btn">View</button>
+                        <a class="view-recipe-btn" th:href="@{/history/user}">View</a>
                     </div>
                 </div>
             </div>

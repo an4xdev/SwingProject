@@ -1,9 +1,6 @@
 package edu.uws.ii.project.Repositories;
 
-import edu.uws.ii.project.domain.Category;
-import edu.uws.ii.project.domain.Difficulty;
-import edu.uws.ii.project.domain.Event;
-import edu.uws.ii.project.domain.Recipe;
+import edu.uws.ii.project.domain.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -28,4 +25,7 @@ public interface RecipeRepository extends PagingAndSortingRepository<Recipe, Lon
     Long countByCategory(Category category);
 
     Long countByEvents(Set<Event> event);
+
+    List<Recipe> findAllByUser(User currentUser);
+
 }

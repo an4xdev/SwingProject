@@ -242,4 +242,11 @@ public class RecipeController {
         return "redirect:/";
     }
 
+    @GetMapping("/user")
+    public String userRecipes(Model model) {
+        var recipes = recipeService.findByUser();
+        model.addAttribute("recipes", recipes);
+        return "user_recipes";
+    }
+
 }

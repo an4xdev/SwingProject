@@ -3,6 +3,8 @@ package edu.uws.ii.project.controllers;
 import edu.uws.ii.project.services.recipe_history.IRecipeHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,5 +30,12 @@ public class RecipeHistoryController {
     public String remove(@RequestParam Long recipeId) {
         recipeHistoryService.delete(recipeId);
         return "redirect:/recipes/" + recipeId;
+    }
+
+    @GetMapping("/user")
+    public String userHistory(Model model) {
+        var history = recipeHistoryService.getUserHistory();
+        model.addAttribute("history", history);
+        return "user_history";
     }
 }
