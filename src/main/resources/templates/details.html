@@ -14,7 +14,13 @@
         <header><h3>About</h3></header>
         <div class="container p1rem justify-content-between">
             <div class="flex1">
-                <p th:text="${recipe.description}"></p>
+                <p><span class="bold">Description:</span> <span th:text="${recipe.description}"></span></p>
+                <p>
+                    <span class="bold">Prepare time:</span> <span th:text="${recipe.time.prepareTime}"></span> +
+                    <span class="bold">Cooking time:</span> <span th:text="${recipe.time.cookTime}"></span> =
+                    <span class="bold">Final time:</span> <span th:text="${recipe.time.totalTime}"></span>
+                </p>
+
                 <p><span class="bold">Posted by:</span> <span th:text="${recipe.user.username}"></span></p>
                 <p><span class="bold">Category: </span> <span th:text="${recipe.category.name}"></span></p>
                 <p><span class="bold">Difficulty: </span> <span th:text="${recipe.difficulty.name}"></span></p>

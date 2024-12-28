@@ -21,6 +21,6 @@ public class IngredientService implements IIngredientsService {
 
     @Override
     public Ingredient save(Ingredient ingredient) {
-        return ingredientRepository.save(ingredient);
+        return ingredientRepository.saveAndFlush(ingredient);
     }
 }

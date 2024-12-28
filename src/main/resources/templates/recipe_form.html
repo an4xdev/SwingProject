@@ -26,7 +26,7 @@
             margin-top: 10px;
         }
 
-        textarea{
+        textarea {
             resize: vertical;
         }
     </style>
@@ -38,9 +38,22 @@
     <h2>Recipe form</h2>
 </header>
 <div class="add-recipe-container">
-    <h2 th:text="${headerTitle}"></h2>
-    <form th:action="@{/recipes/form}" th:object="${recipeForm}" th:attr="method=${httpMethod}" enctype="multipart/form-data">
+    <h2 th:text="${title}"></h2>
 
+    <div th:if="${editing and (recipeUser != #authentication.name and !#authorization.expression('hasRole(''ROLE_ADMIN'')'))}">
+        <span class="error-in-form">You cannot edit this recipe. You can only edit recipes that you created.</span>
+        <br>
+        <a th:href="@{/}" class="black-button" style="width: fit-content; display: block; margin: 10px 0">Go to Home</a>
+    </div>
+
+
+    <form th:action="@{/recipes/form}"
+          th:object="${recipeForm}"
+          method="post"
+          enctype="multipart/form-data"
+          th:if="${!editing or (editing and (recipeUser == #authentication.name or #authorization.expression('hasRole(''ROLE_ADMIN'')')))}">
+
+        <input type="hidden" name="_method" value="PUT" th:if="${editing}"/>
         <div class="add-recipe-form-panel">
             <input type="hidden" th:field="*{id}" name="id">
             <div th:if="${#fields.hasErrors('id')}" class="error-in-form">
@@ -58,12 +71,14 @@
 
         <div class="add-recipe-form-panel">
             <label for="description">Description</label>
-            <textarea id="description" name="description" required th:field="*{description}" minlength="3" maxlength="500" ></textarea>
+            <textarea id="description" name="description" required th:field="*{description}" minlength="3"
+                      maxlength="500"></textarea>
             <div th:if="${#fields.hasErrors('description')}" class="error-in-form">
                 <span th:errors="*{description}"></span>
             </div>
         </div>
 
+<!--        TODO: in editing set photo?-->
         <div class="add-recipe-form-panel">
             <h3>Upload Images</h3>
             <div id="image-upload-section">
@@ -84,7 +99,8 @@
             <label for="difficulty">Difficulty</label>
             <select id="difficulty" name="difficulty" required th:field="*{difficultyId}">
                 <option value="-1">-- Choose difficulty --</option>
-                <option th:each="difficulty : ${difficulties}" th:value="${difficulty.id}" th:text="${difficulty.name}"></option>
+                <option th:each="difficulty : ${difficulties}" th:value="${difficulty.id}"
+                        th:text="${difficulty.name}"></option>
             </select>
             <div th:if="${#fields.hasErrors('difficultyId')}" class="error-in-form">
                 <span th:errors="*{difficultyId}"></span>
@@ -95,7 +111,8 @@
             <label for="category">Category</label>
             <select id="category" name="category" required th:field="*{categoryId}">
                 <option value="-1">-- Choose category --</option>
-                <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+                <option th:each="category : ${categories}" th:value="${category.id}"
+                        th:text="${category.name}"></option>
             </select>
             <div th:if="${#fields.hasErrors('categoryId')}" class="error-in-form">
                 <span th:errors="*{categoryId}"></span>
@@ -133,7 +150,16 @@
         <div class="add-recipe-form-panel">
             <div id="selected-ingredients">
                 <h3>Selected Ingredients:</h3>
-                <div id="ingredient-list"></div>
+                <div id="ingredient-list">
+                    <div data-name="ingredients" th:each="ingredient, iterStat : ${recipeForm.ingredients}">
+                        <span th:text="${ingredient.name}"></span>
+                        <button type="button" class="remove-selected-ingredient">Remove</button>
+                        <input type="hidden" th:field="*{ingredients[__${iterStat.index}__].name}"
+                               th:value="${ingredient.name}">
+                        <input type="hidden" th:field="*{ingredients[__${iterStat.index}__].id}"
+                               th:value="${ingredient.id}">
+                    </div>
+                </div>
             </div>
             <div th:if="${#fields.hasErrors('ingredients')}" class="error-in-form">
                 <span th:errors="*{ingredients}"></span>
@@ -152,32 +178,29 @@
         <div class="add-recipe-form-panel">
             <h3>Steps</h3>
             <ol id="new-steps">
-                <li style="display: none">
-                    <input type="text" name="steps[0].description" placeholder="New Step Description"/>
+                <li th:each="step, iterStat : ${recipeForm.steps}">
+                    <input type="text" th:field="*{steps[__${iterStat.index}__].description}"
+                           placeholder="Step Description"/>
+                    <input type="hidden" th:field="*{steps[__${iterStat.index}__].id}" th:value="${step.id}">
                     <button type="button" class="remove-step">Remove</button>
                 </li>
             </ol>
             <button type="button" id="add-step">Add New Step</button>
-            <div th:if="${#fields.hasErrors('steps')}" class="error-in-form">
-                <span th:errors="*{steps}"></span>
-            </div>
         </div>
 
-        <div th:unless="${editing}">
-            <button type="submit" class="submit-recipe-btn" th:text="${buttonTitle}"></button>
-        </div>
-
-        <div th:if="${editing} and ${#authentication.name == recipe.user.username or ${#authorization.expression('hasRole(''ROLE_ADMIN'')')}}">
-            <button type="submit" class="submit-recipe-btn" th:text="${buttonTitle}"></button>
-        </div>
+        <button type="submit" class="submit-recipe-btn" th:text="${title}"></button>
     </form>
 </div>
 <div th:insert="~{fragments/footer :: footer}"></div>
 <script>
     $(document).ready(function () {
-        let ingredientIndex = 0;
+        let ingredientIndex = $('#ingredient-list div[data-name="ingredients"]').length;
         let ingredientAddedIndex = 0;
-        let stepIndex = 1;
+        let stepIndex = $('#new-steps li').length;
+
+        console.log(`Ingredient Index: ${ingredientIndex}`);
+        console.log(`Ingredient Added Index: ${ingredientAddedIndex}`);
+        console.log(`Step Index: ${stepIndex}`);
 
         let ingredientList = [];
 
@@ -185,6 +208,7 @@
             $('#new-ingredients').append(`
             <div>
                 <input type="text" name="ingredientsAdded[${ingredientAddedIndex}].name" placeholder="New Ingredient" />
+                <input type="hidden" name="ingredientsAdded[${ingredientAddedIndex}].id" value="" />
                 <button type="button" class="remove-ingredient">Remove</button>
             </div>
         `);
@@ -222,34 +246,37 @@
                 return;
             }
 
-            if(ingredientList.includes(selectedIngredient)){
+            const selectedIngredientName = $(`#ingredient-select option[value="${selectedIngredient}"]`).text();
+            if (!selectedIngredientName) {
+                return;
+            }
+
+            if (ingredientList.includes(selectedIngredient)) {
                 alert('Ingredient already added');
                 return;
             }
 
             ingredientList.push(selectedIngredient);
 
-            const selectedIngredientName = $(`#ingredient-select option[value="${selectedIngredient}"]`).text();
-
-            if (selectedIngredient) {
-                if ($(`#ingredient-list div[data-name="${selectedIngredient}"]`).length === 0) {
-                    $('#ingredient-list').append(`
-                    <div data-name="ingredients">
+            $('#ingredient-list').append(`
+                    <div>
                         <span>${selectedIngredientName}</span>
                         <button type="button" class="remove-selected-ingredient">Remove</button>
-                        <input type="hidden" name="ingredients[${ingredientIndex}].name" value="${selectedIngredientName}" >
-                        <input type="hidden" name="ingredients[${ingredientIndex}].id" value="${selectedIngredient}" >
+                        <input type="hidden" name="ingredients[${ingredientIndex}].name" value="${selectedIngredientName}">
+                        <input type="hidden" name="ingredients[${ingredientIndex}].id" value="${selectedIngredient}">
                     </div>
-                `);
-                    ingredientIndex++;
-                }
-                $(this).val('');
-            }
+            `);
+            ingredientIndex++;
+            $(this).val('');
         });
 
         $('#ingredient-list').on('click', '.remove-selected-ingredient', function () {
-            $(this).parent().remove();
+            const ingredientDiv = $(this).parent();
+            const ingredientId = ingredientDiv.find('input[name*=".id"]').val();
+            ingredientList = ingredientList.filter(id => id !== ingredientId);
+            ingredientDiv.remove();
         });
+
 
         $('#add-step').on('click', function () {
             $('#new-steps').append(`

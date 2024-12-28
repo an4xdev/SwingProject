@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.List;
 @Setter
 @Getter
 @NoArgsConstructor
+@ToString
 public class FormDTO {
     @NotNull
     private Long id;

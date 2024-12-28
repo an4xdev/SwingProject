@@ -37,7 +37,7 @@ import java.util.List;
 @Log4j2
 @Controller
 @RequestMapping("/recipes")
-public class RecipesController {
+public class RecipeController {
 
     private final IRecipeService recipeService;
     private final ICommentService commentService;
@@ -52,7 +52,7 @@ public class RecipesController {
     private final FormDTOValidator formDTOValidator;
 
     @Autowired
-    public RecipesController(IRecipeService recipeService, ICommentService commentService, IIngredientsService ingredientsService, IStepService stepService, IDifficultyService difficultyService, IFavouriteService favouriteService, IRecipeHistoryService recipeHistoryService, IEventService eventService, ICategoryService categoryService, IRatingService ratingService, FormDTOValidator formDTOValidator) {
+    public RecipeController(IRecipeService recipeService, ICommentService commentService, IIngredientsService ingredientsService, IStepService stepService, IDifficultyService difficultyService, IFavouriteService favouriteService, IRecipeHistoryService recipeHistoryService, IEventService eventService, ICategoryService categoryService, IRatingService ratingService, FormDTOValidator formDTOValidator) {
         this.recipeService = recipeService;
         this.ingredientsService = ingredientsService;
         this.stepService = stepService;
@@ -134,21 +134,17 @@ public class RecipesController {
             var recipe = recipeService.findById(id).orElseThrow();
             var steps = stepService.findAllByRecipeId(id);
             recipeForm = new FormDTO(recipe, steps);
-            model.addAttribute("recipe", recipe);
+            model.addAttribute("recipeUser", recipe.getUser().getUsername());
         }
         else {
-            model.addAttribute("recipe", new Recipe());
+            model.addAttribute("recipeUser", "");
         }
 
         model.addAttribute("recipeForm", recipeForm);
 
-        model.addAttribute("headerTitle", id == null ? "Add recipe" : "Edit recipe");
-
-        model.addAttribute("buttonTitle", id == null ? "Add recipe" : "Edit recipe");
+        model.addAttribute("title", id == null ? "Add recipe" : "Edit recipe");
 
         model.addAttribute("editing", id != null);
-
-        model.addAttribute("httpMethod", id == null ? "POST" : "PUT");
 
         return "recipe_form";
     }

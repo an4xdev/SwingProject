@@ -31,4 +31,9 @@ public class StepService implements IStepService {
     public void delete(Step step) {
         stepRepository.delete(step);
     }
+
+    @Override
+    public void deleteAllByRecipeId(Long id) {
+        stepRepository.deleteAllByRecipeId(id);
+    }
 }

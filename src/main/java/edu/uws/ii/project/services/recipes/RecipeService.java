@@ -4,7 +4,9 @@ import edu.uws.ii.project.Repositories.CategoryRepository;
 import edu.uws.ii.project.Repositories.DifficultyRepository;
 import edu.uws.ii.project.Repositories.EventRepository;
 import edu.uws.ii.project.Repositories.RecipeRepository;
-import edu.uws.ii.project.domain.*;
+import edu.uws.ii.project.domain.Ingredient;
+import edu.uws.ii.project.domain.Recipe;
+import edu.uws.ii.project.domain.Step;
 import edu.uws.ii.project.dtos.FormDTO;
 import edu.uws.ii.project.dtos.SearchFormDTO;
 import edu.uws.ii.project.services.categories.ICategoryService;
@@ -169,23 +171,18 @@ public class RecipeService implements IRecipeService {
         return recipeRepository.findAll(spec, sort).stream().distinct().collect(Collectors.toList());
     }
 
-    private ArrayList<Ingredient> getIngredients(FormDTO recipeForm) {
-        ArrayList<Ingredient> ingredientsToRecipe = new ArrayList<>();
+    private List<Ingredient> getIngredients(FormDTO recipeForm) {
+        List<Ingredient> ingredientsToRecipe = new ArrayList<>();
 
         if (recipeForm.getIngredientsAdded() != null) {
-            if (!recipeForm.getIngredientsAdded().isEmpty()) {
-                for (Ingredient ingredient : recipeForm.getIngredientsAdded()) {
-                    // skip empty ingredients
-                    // another validation after js validation
-                    if (ingredient.getName().isBlank()) {
-                        continue;
-                    }
-                    ingredientsToRecipe.add(ingredientsService.save(ingredient));
+            for (Ingredient ingredient : recipeForm.getIngredientsAdded()) {
+                if (ingredient.getName() == null || ingredient.getName().isBlank()) {
+                    continue;
                 }
+                Ingredient saved = ingredientsService.save(ingredient);
+                ingredientsToRecipe.add(saved);
             }
         }
-
-        // add existing ingredients to recipe
 
         if (recipeForm.getIngredients() != null) {
             ingredientsToRecipe.addAll(recipeForm.getIngredients());
@@ -194,14 +191,15 @@ public class RecipeService implements IRecipeService {
         return ingredientsToRecipe;
     }
 
-    private ArrayList<Step> getSteps(FormDTO recipeForm) {
-        ArrayList<Step> stepsToRecipe = new ArrayList<>();
+    private List<Step> getSteps(FormDTO recipeForm, Recipe recipe) {
+        List<Step> stepsToRecipe = new ArrayList<>();
 
         if (recipeForm.getSteps() != null) {
-            for (var step : recipeForm.getSteps()) {
-                if (step.getDescription().isBlank()) {
+            for (Step step : recipeForm.getSteps()) {
+                if (step.getDescription() == null || step.getDescription().isBlank()) {
                     continue;
                 }
+                step.setRecipe(recipe);
                 stepsToRecipe.add(step);
             }
         }
@@ -210,98 +208,69 @@ public class RecipeService implements IRecipeService {
     }
 
     @Override
-    public void save(FormDTO recipeForm, String photoPath) {
-        ArrayList<Ingredient> ingredientsToRecipe = getIngredients(recipeForm);
+    @Transactional
+    public void save(FormDTO formDTO, String photoPath) {
+        List<Ingredient> ingredientsToRecipe = getIngredients(formDTO);
+        List<Step> stepsToRecipe = getSteps(formDTO, null);
 
-        // get category by id
-
-        Category category = categoryService.findById(recipeForm.getCategoryId());
-
-        // get difficulty by id
-
-        Difficulty difficulty = difficultyService.findById(recipeForm.getDifficultyId());
-
-        // get events by ids
-
-        List<Event> events = eventService.findAllByIds(recipeForm.getEventIds());
-
-        // get current user
-
-        User user = userService.getCurrentUser();
-
-        // validate steps
-
-        ArrayList<Step> stepsToRecipe = getSteps(recipeForm);
-
-        // create new recipe
-
-        Recipe recipe = new Recipe(recipeForm.getName(), recipeForm.getDescription(), photoPath, recipeForm.getTime(), recipeForm.getRequireOven(), LocalDateTime.now(), user, new HashSet<>(ingredientsToRecipe), category, difficulty, new HashSet<>(events));
-        recipe.setId(null);
-
-        // save recipe
+        Recipe recipe = new Recipe(
+                formDTO.getName(),
+                formDTO.getDescription(),
+                photoPath,
+                formDTO.getTime(),
+                formDTO.getRequireOven(),
+                LocalDateTime.now(),
+                userService.getCurrentUser(),
+                new HashSet<>(ingredientsToRecipe),
+                categoryService.findById(formDTO.getCategoryId()),
+                difficultyService.findById(formDTO.getDifficultyId()),
+                new HashSet<>(eventService.findAllByIds(formDTO.getEventIds()))
+        );
 
         recipeRepository.save(recipe);
 
-        // save steps
-
-        for (var step : stepsToRecipe) {
+        for (Step step : stepsToRecipe) {
             step.setRecipe(recipe);
         }
-
         stepService.saveAll(stepsToRecipe);
-
-        // Save the recipe again with steps
-
-        recipeRepository.save(recipe);
     }
 
     @Override
-    public void update(FormDTO recipeForm, Recipe recipe, String photoPath) {
-        ArrayList<Ingredient> ingredientsToRecipe = getIngredients(recipeForm);
+    @Transactional
+    public void update(FormDTO formDTO, Recipe recipe, String photoPath) {
+        List<Ingredient> validIngredients = formDTO.getIngredients().stream()
+                .filter(ingredient -> ingredient.getId() != null)
+                .toList();
 
-        // get category by id
+        formDTO.setIngredients(validIngredients);
 
-        Category category = categoryService.findById(recipeForm.getCategoryId());
+        System.out.println("------------------------------");
+        System.out.println("------------------------------");
+        System.out.println(formDTO);
+        System.out.println("------------------------------");
+        System.out.println("------------------------------");
 
-        // get difficulty by id
+        List<Ingredient> ingredientsToRecipe = getIngredients(formDTO);
 
-        Difficulty difficulty = difficultyService.findById(recipeForm.getDifficultyId());
+        stepService.deleteAllByRecipeId(recipe.getId());
+        List<Step> stepsToRecipe = getSteps(formDTO, recipe);
 
-        // get events by ids
-
-        List<Event> events = eventService.findAllByIds(recipeForm.getEventIds());
-
-        // validate steps
-
-        ArrayList<Step> stepsToRecipe = getSteps(recipeForm);
-
-        // update recipe fields
-
-        recipe.setName(recipeForm.getName());
-        recipe.setDescription(recipeForm.getDescription());
+        recipe.setName(formDTO.getName());
+        recipe.setDescription(formDTO.getDescription());
         recipe.setPhotoPath(photoPath);
-        recipe.setTime(recipeForm.getTime());
-        recipe.setRequireOven(recipeForm.getRequireOven());
+        recipe.setTime(formDTO.getTime());
+        recipe.setRequireOven(formDTO.getRequireOven());
         recipe.setIngredients(new HashSet<>(ingredientsToRecipe));
-        recipe.setCategory(category);
-        recipe.setDifficulty(difficulty);
-        recipe.setEvents(new HashSet<>(events));
-
-        // update recipe
+        recipe.setCategory(categoryService.findById(formDTO.getCategoryId()));
+        recipe.setDifficulty(difficultyService.findById(formDTO.getDifficultyId()));
+        recipe.setEvents(new HashSet<>(eventService.findAllByIds(formDTO.getEventIds())));
 
         recipeRepository.save(recipe);
 
-        // save steps
-
-        for (var step : stepsToRecipe) {
+        for (Step step : stepsToRecipe) {
             step.setRecipe(recipe);
         }
-
         stepService.saveAll(stepsToRecipe);
-
-        // update the recipe again with steps
-
-        recipeRepository.save(recipe);
     }
 }
 

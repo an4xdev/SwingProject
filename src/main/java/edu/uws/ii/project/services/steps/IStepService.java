@@ -11,4 +11,6 @@ public interface IStepService {
     void saveAll(@Size List<Step> steps);
 
     void delete(Step step);
+
+    void deleteAllByRecipeId(Long id);
 }
