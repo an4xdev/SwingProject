@@ -135,8 +135,7 @@ public class RecipeController {
             var steps = stepService.findAllByRecipeId(id);
             recipeForm = new FormDTO(recipe, steps);
             model.addAttribute("recipeUser", recipe.getUser().getUsername());
-        }
-        else {
+        } else {
             model.addAttribute("recipeUser", "");
         }
 
@@ -199,7 +198,7 @@ public class RecipeController {
             return "recipe_form";
         }
 
-        String photoPath = saveImage(recipeForm.getImage());
+        String photoPath = recipeForm.getImage() != null ? saveImage(recipeForm.getImage()) : null;
 
         var recipe = recipeService.findById(recipeForm.getId()).orElseThrow();
 

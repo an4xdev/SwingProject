@@ -78,12 +78,15 @@
             </div>
         </div>
 
-<!--        TODO: in editing set photo?-->
+        <div class="add-recipe-form-panel" th:if="*{imagePath != null}">
+            <h3>Existing image</h3>
+            <img th:src="*{imagePath}" alt="Recipe Image" style="width: 100px; height: 100px; object-fit: cover;">
+        </div>
         <div class="add-recipe-form-panel">
             <h3>Upload Images</h3>
             <div id="image-upload-section">
                 <label for="image">Image:</label>
-                <input type="file" name="images" id="image" required accept="image/*" th:field="*{image}">
+                <input type="file" name="images" id="image" accept="image/*" th:field="*{image}" th:attr="required=${!editing}">>
             </div>
             <div th:if="${#fields.hasErrors('image')}" class="error-in-form">
                 <span th:errors="*{image}"></span>

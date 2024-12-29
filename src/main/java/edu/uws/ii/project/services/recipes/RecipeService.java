@@ -238,17 +238,12 @@ public class RecipeService implements IRecipeService {
     @Override
     @Transactional
     public void update(FormDTO formDTO, Recipe recipe, String photoPath) {
+
         List<Ingredient> validIngredients = formDTO.getIngredients().stream()
                 .filter(ingredient -> ingredient.getId() != null)
                 .toList();
 
         formDTO.setIngredients(validIngredients);
-
-        System.out.println("------------------------------");
-        System.out.println("------------------------------");
-        System.out.println(formDTO);
-        System.out.println("------------------------------");
-        System.out.println("------------------------------");
 
         List<Ingredient> ingredientsToRecipe = getIngredients(formDTO);
 
@@ -257,7 +252,10 @@ public class RecipeService implements IRecipeService {
 
         recipe.setName(formDTO.getName());
         recipe.setDescription(formDTO.getDescription());
-        recipe.setPhotoPath(photoPath);
+        if(photoPath != null)
+        {
+            recipe.setPhotoPath(photoPath);
+        }
         recipe.setTime(formDTO.getTime());
         recipe.setRequireOven(formDTO.getRequireOven());
         recipe.setIngredients(new HashSet<>(ingredientsToRecipe));

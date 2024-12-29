@@ -35,7 +35,6 @@ public class FormDTO {
     private List<Ingredient> ingredients;
     private List<Ingredient> ingredientsAdded;
 
-    @NotNull
     private MultipartFile image;
 
     @Min(value = 1)
@@ -54,6 +53,8 @@ public class FormDTO {
 
     private Time time;
 
+    private String imagePath;
+
     public FormDTO(Long id, String name) {
         this.id = id;
         this.name = name;
@@ -62,6 +63,7 @@ public class FormDTO {
         this.steps = new ArrayList<>();
         this.eventIds = new ArrayList<>();
         time = new Time();
+        imagePath = null;
     }
 
     public FormDTO(Recipe recipe, List<Step> steps) {
@@ -76,5 +78,6 @@ public class FormDTO {
         this.ingredients = new ArrayList<>(recipe.getIngredients());
         this.ingredientsAdded = new ArrayList<>();
         this.steps = new ArrayList<>(steps);
+        this.imagePath = recipe.getPhotoPath();
     }
 }
