@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[[${title}]] Not Found - Online Recipe Book</title>
+    <link rel="stylesheet" href="/styles/styles.css">
+</head>
+<body>
+<div th:insert="~{fragments/header :: header}"></div>
+<main>
+    <div class="error-container">
+        <h2 th:text="${message}"></h2>
+        <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+            <p><span class="bold">Exception: </span><span th:text="${exception}"></span></p>
+        </div>
+        <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+            <p><span class="bold">Method: </span><span th:text="${method}"></span></p>
+        </div>
+        <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+            <p><span class="bold">URL: </span><span th:text="${url}"></span></p>
+        </div>
+        <a th:href="@{/}" class="black-button">Go to Home</a>
+    </div>
+</main>
+<div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+</html>

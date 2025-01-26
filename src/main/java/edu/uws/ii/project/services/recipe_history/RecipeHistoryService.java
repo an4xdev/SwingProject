@@ -5,6 +5,7 @@ import edu.uws.ii.project.Repositories.RecipeRepository;
 import edu.uws.ii.project.domain.Recipe;
 import edu.uws.ii.project.domain.RecipeHistory;
 import edu.uws.ii.project.dtos.HistoryRecipeDTO;
+import edu.uws.ii.project.exceptions.RecipeNotFound;
 import edu.uws.ii.project.services.user.IUserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +41,10 @@ public class RecipeHistoryService implements IRecipeHistoryService {
     @Override
     public void add(Long recipeId) {
         var user = userService.getCurrentUser();
-        var recipe = recipeRepository.findById(recipeId);
-        RecipeHistory recipeHistory = new RecipeHistory(user, recipe.get());
+        var recipe = recipeRepository.findById(recipeId).orElseThrow(
+                () -> new RecipeNotFound("In adding recipe to history with id: " + recipeId + " not found")
+        );
+        RecipeHistory recipeHistory = new RecipeHistory(user, recipe);
         recipeHistoryRepository.save(recipeHistory);
     }
 
@@ -49,8 +52,10 @@ public class RecipeHistoryService implements IRecipeHistoryService {
     @Transactional
     public void delete(Long recipeId) {
         var user = userService.getCurrentUser();
-        var recipe = recipeRepository.findById(recipeId);
-        recipeHistoryRepository.deleteByRecipeAndUser(recipe.get(), user);
+        var recipe = recipeRepository.findById(recipeId).orElseThrow(
+                () -> new RecipeNotFound("In deleting recipe from history with id: " + recipeId + " not found")
+        );
+        recipeHistoryRepository.deleteByRecipeAndUser(recipe, user);
     }
 
     @Override

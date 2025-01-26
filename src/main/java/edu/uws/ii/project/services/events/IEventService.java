@@ -15,6 +15,9 @@ public interface IEventService {
 
     void deleteById(Long id);
 
+    /// Returns the event with the given id or null if it does not exist.
+    /// @param id The id of the event to find.
+    /// @return The event with the given id or null if it does not exist.
     Event findById(Long id);
 
     void update(Long id, String name);

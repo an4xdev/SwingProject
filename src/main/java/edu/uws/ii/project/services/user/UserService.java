@@ -2,6 +2,7 @@ package edu.uws.ii.project.services.user;
 
 import edu.uws.ii.project.Repositories.UserRepository;
 import edu.uws.ii.project.domain.User;
+import edu.uws.ii.project.exceptions.UserNotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,7 +34,10 @@ public class UserService implements IUserService{
     public String getCurrentUsername() {
         var id = getCurrentUserId();
         if (id != null) {
-            return userRepository.findById(id).get().getUsername();
+            var user = userRepository.findById(id).orElseThrow(
+                    () -> new UserNotFound("In getting current user username")
+            );
+            return user.getUsername();
         }
         return "";
     }
@@ -42,7 +46,10 @@ public class UserService implements IUserService{
     public String getCurrentUserEmail() {
         var id = getCurrentUserId();
         if (id != null) {
-            return userRepository.findById(id).get().getEmail();
+            var user = userRepository.findById(id).orElseThrow(
+                    () -> new UserNotFound("In getting current user email")
+            );
+            return user.getEmail();
         }
         return "";
     }
@@ -51,7 +58,9 @@ public class UserService implements IUserService{
     public User getCurrentUser() {
         var id = getCurrentUserId();
         if (id != null) {
-            return userRepository.findById(id).get();
+            return userRepository.findById(id).orElseThrow(
+                    () -> new UserNotFound("In getting current user")
+            );
         }
         return null;
     }

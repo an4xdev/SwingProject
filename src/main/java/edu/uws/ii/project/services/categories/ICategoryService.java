@@ -14,6 +14,9 @@ public interface ICategoryService {
 
     void deleteById(Long id);
 
+    /// Returns the category with the given id or null if it does not exist.
+    /// @param id The id of the category to find.
+    /// @return The category with the given id or null if it does not exist.
     Category findById(Long id);
 
     void update(Long id, String name);

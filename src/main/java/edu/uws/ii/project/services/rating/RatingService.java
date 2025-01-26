@@ -4,6 +4,7 @@ import edu.uws.ii.project.Repositories.RatingRepository;
 import edu.uws.ii.project.Repositories.RecipeRepository;
 import edu.uws.ii.project.domain.Rating;
 import edu.uws.ii.project.domain.Recipe;
+import edu.uws.ii.project.exceptions.RecipeNotFound;
 import edu.uws.ii.project.services.user.IUserService;
 import org.springframework.stereotype.Service;
 
@@ -35,13 +36,16 @@ public class RatingService implements IRatingService {
     @Override
     public void rate(Long recipeId, Float rating) {
         var user = userService.getCurrentUser();
-        var recipe = recipeRepository.findById(recipeId);
-        var existingRating = ratingRepository.findByRecipeAndUser(recipe.get(), user);
-        if(existingRating.isPresent()) {
+        var recipe = recipeRepository.findById(recipeId).orElseThrow(
+                () ->
+                        new RecipeNotFound("In rating recipe with id: " + recipeId)
+        );
+        var existingRating = ratingRepository.findByRecipeAndUser(recipe, user);
+        if (existingRating.isPresent()) {
             existingRating.get().setRating(rating);
             ratingRepository.save(existingRating.get());
         } else {
-            Rating newRating = new Rating(user, recipe.get(), rating);
+            Rating newRating = new Rating(user, recipe, rating);
             ratingRepository.save(newRating);
         }
     }

@@ -4,6 +4,7 @@ import edu.uws.ii.project.domain.*;
 import edu.uws.ii.project.dtos.FormDTO;
 import edu.uws.ii.project.dtos.RateRecipeDTO;
 import edu.uws.ii.project.editors.CustomTimeEditor;
+import edu.uws.ii.project.exceptions.RecipeNotFound;
 import edu.uws.ii.project.services.categories.ICategoryService;
 import edu.uws.ii.project.services.comments.ICommentService;
 import edu.uws.ii.project.services.difficulties.IDifficultyService;
@@ -76,7 +77,11 @@ public class RecipeController {
 
     @GetMapping("/{id}")
     public String details(@PathVariable Long id, Model model) {
-        var recipe = recipeService.findById(id).orElseThrow();
+        var recipe = recipeService
+                .findById(id)
+                .orElseThrow(
+                        () -> new RecipeNotFound("In search of recipe with id: " + id)
+                );
         var favourites = favouriteService.getFavouriteCountByRecipe(recipe);
         var done = recipeHistoryService.getDoneCountByRecipe(recipe);
         var comments = commentService.findAllByRecipeId(id);
@@ -236,7 +241,11 @@ public class RecipeController {
 
     @DeleteMapping("/{id}")
     public String deleteRecipe(@PathVariable Long id) {
-        var recipe = recipeService.findById(id).orElseThrow();
+        var recipe = recipeService
+                .findById(id)
+                .orElseThrow(
+                        () -> new RecipeNotFound("In deleting of recipe with id: " + id)
+                );
         recipeService.delete(recipe);
         return "redirect:/";
     }

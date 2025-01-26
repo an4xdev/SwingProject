@@ -1,5 +1,8 @@
 package edu.uws.ii.project.controllers;
 
+import edu.uws.ii.project.exceptions.CategoryNotFound;
+import edu.uws.ii.project.exceptions.DifficultyNotFound;
+import edu.uws.ii.project.exceptions.EventNotFound;
 import edu.uws.ii.project.services.categories.ICategoryService;
 import edu.uws.ii.project.services.difficulties.IDifficultyService;
 import edu.uws.ii.project.services.events.IEventService;
@@ -74,15 +77,27 @@ public class AdminController {
     public String editForm(@PathVariable String type, @PathVariable Long id, Model model) {
         switch (type) {
             case "difficulty":
-                model.addAttribute("item", difficultyService.findById(id));
+                var difficulty = difficultyService.findById(id);
+                if (difficulty == null) {
+                    throw new DifficultyNotFound("In getting form for editing difficulty with id: " + id);
+                }
+                model.addAttribute("item", difficulty);
                 model.addAttribute("typeForm", "difficulty");
                 break;
             case "category":
-                model.addAttribute("item", categoryService.findById(id));
+                var category = categoryService.findById(id);
+                if (category == null) {
+                    throw new CategoryNotFound("In getting form for editing category with id: " + id);
+                }
+                model.addAttribute("item", category);
                 model.addAttribute("typeForm", "category");
                 break;
             case "event":
-                model.addAttribute("item", eventService.findById(id));
+                var event = eventService.findById(id);
+                if (event == null) {
+                    throw new EventNotFound("In getting form for editing event with id: " + id);
+                }
+                model.addAttribute("item", event);
                 model.addAttribute("typeForm", "event");
                 break;
             default:

@@ -5,6 +5,7 @@ import edu.uws.ii.project.Repositories.RecipeRepository;
 import edu.uws.ii.project.domain.Favourite;
 import edu.uws.ii.project.domain.Recipe;
 import edu.uws.ii.project.dtos.FavouriteRecipeDTO;
+import edu.uws.ii.project.exceptions.RecipeNotFound;
 import edu.uws.ii.project.services.user.IUserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class FavouriteService implements IFavouriteService {
     private final RecipeRepository recipeRepository;
 
     @Autowired
-    public FavouriteService(FavouriteRepository favouriteRepository, IUserService userService,  RecipeRepository recipeRepository) {
+    public FavouriteService(FavouriteRepository favouriteRepository, IUserService userService, RecipeRepository recipeRepository) {
         this.favouriteRepository = favouriteRepository;
         this.userService = userService;
         this.recipeRepository = recipeRepository;
@@ -40,8 +41,9 @@ public class FavouriteService implements IFavouriteService {
     @Override
     public void add(Long recipeId) {
         var user = userService.getCurrentUser();
-        var recipe = recipeRepository.findById(recipeId);
-        Favourite favourite = new Favourite(user, recipe.get());
+        var recipe = recipeRepository.findById(recipeId).orElseThrow(() ->
+                new RecipeNotFound("In add favourite, recipe with id " + recipeId + " not found"));
+        Favourite favourite = new Favourite(user, recipe);
         favouriteRepository.save(favourite);
     }
 
@@ -49,8 +51,10 @@ public class FavouriteService implements IFavouriteService {
     @Transactional
     public void remove(Long recipeId) {
         var user = userService.getCurrentUser();
-        var recipe = recipeRepository.findById(recipeId);
-        favouriteRepository.deleteByRecipeAndUser(recipe.get(), user);
+        var recipe = recipeRepository.findById(recipeId).orElseThrow(() ->
+                new RecipeNotFound("In remove favourite, recipe with id " + recipeId + " not found")
+        );
+        favouriteRepository.deleteByRecipeAndUser(recipe, user);
     }
 
     @Override

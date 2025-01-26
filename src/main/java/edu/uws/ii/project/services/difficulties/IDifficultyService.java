@@ -14,6 +14,9 @@ public interface IDifficultyService {
 
     void deleteById(Long id);
 
+    /// Returns the difficulty with the given id or null if it does not exist.
+    /// @param id The id of the difficulty to find.
+    /// @return The difficulty with the given id or null if it does not exist.
     Difficulty findById(Long id);
 
     void update(Long id, String name);
