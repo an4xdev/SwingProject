@@ -10,7 +10,7 @@
 <div th:insert="~{fragments/header :: header}"></div>
 <div th:insert="~{fragments/nav :: div}"></div>
 <main class="content">
-    <section>
+    <section th:if="${#authentication.name != 'anonymousUser'}">
         <header>
             <h2>Add new recipe</h2>
         </header>
